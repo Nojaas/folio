@@ -1,9 +1,27 @@
-import { Spotlight } from "@/components/ui/spotlight";
-import ShimmerButton from "@/components/ui/shimmer-button";
+/* import { Spotlight } from "@/components/ui/spotlight";
+import ShimmerButton from "@/components/ui/shimmer-button"; */
+
+import { Header } from "./components/Header";
+import { Hero } from "./components/Hero";
+import { Skills } from "./components/Skills";
+import { Spacing } from "./components/Spacing";
+import { Status } from "./components/Status";
 
 export default function Home() {
   return (
-    <div className="relative h-screen w-full bg-black/[0.96] antialiased bg-grid-white/[0.02] flex items-center justify-center">
+    <main>
+      <Header />
+      <Spacing size="md" />
+      <Hero />
+      <Spacing size="md" />
+      <Status />
+      <Spacing size="md" />
+      <Skills />
+    </main>
+  );
+}
+
+/*     <div className="relative h-screen w-full bg-black/[0.96] antialiased bg-grid-white/[0.02] flex items-center justify-center">
       <Spotlight
         className="-top-40 left-0 md:left-60 md:-top-20"
         fill="white"
@@ -27,6 +45,4 @@ export default function Home() {
           </ShimmerButton>
         </a>
       </div>
-    </div>
-  );
-}
+    </div> */
