@@ -24,12 +24,6 @@ export const Header = () => {
           >
             <LinkedInIcon size={12} className="text-foreground" />
           </Link>
-          <Link
-            href="https//github.com/nojaas"
-            className={cn(buttonVariants({ variant: "outline" }), "size-6 p-0")}
-          >
-            <GithubIcon size={12} className="text-foreground" />
-          </Link>
         </ul>
       </Section>
     </header>
