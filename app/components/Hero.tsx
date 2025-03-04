@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import { Section } from "./Section";
-import { GithubIcon } from "./icons/GithubIcon";
 import Link from "next/link";
 import { Code } from "./Code";
+import { ReactIcon } from "./icons/ReactIcon";
 
 export const Hero = () => {
   return (
@@ -11,23 +11,18 @@ export const Hero = () => {
         <h2 className="font-caption font-bold text-5xl text-primary">
           Jason Leroy
         </h2>
-        <h3 className="text-3xl font-caption ">Software developper</h3>
+        <h3 className="text-3xl font-caption">Software developper</h3>
         <p className="text-base">
-          I create front-end application on
+          I create front-end application with{" "}
           <Link href="https//github.com/nojaas">
             <Code className="inline-flex items-center gap-1">
-              <GithubIcon size={10} className="inline" />
-              github
+              <ReactIcon size={10} className="inline" />
+              React
             </Code>
-            , currently working at{" "}
+            , currently looking for a job,
+            Living in{" "}
             <Code className="inline-flex items-center gap-1">
-              <GithubIcon size={10} className="inline" />
-              github,
-            </Code>
-            Living in
-            <Code className="inline-flex items-center gap-1">
-              <GithubIcon size={10} className="inline" />
-              Paris
+              🇫🇷Paris
             </Code>
           </Link>
         </p>
