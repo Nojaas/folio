@@ -1,7 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Section } from "./Section";
 import { ReactIcon } from "./icons/ReactIcon";
-import { NextJsIcon } from "./icons/NextJsIcon";
 import { TailwindIcon } from "./icons/TailwindIcon";
 import { Code } from "./Code";
 import { OpenAiIcon } from "./icons/OpenAiIcon";

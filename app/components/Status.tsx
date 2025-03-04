@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { Card } from "@/components/ui/card";
-import { Code, Home, ImageUp } from "lucide-react";
+import { ImageUp } from "lucide-react";
 import { ContactCard } from "./ContactCard";
 import { Section } from "./Section";
 import { SideProject, SideProjectProps } from "./SideProject";
