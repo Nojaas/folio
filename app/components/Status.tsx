@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { Card } from "@/components/ui/card";
-import { ImageUp } from "lucide-react";
+import { Car, ImageUp } from "lucide-react";
 import { ContactCard } from "./ContactCard";
 import { Section } from "./Section";
 import { SideProject, SideProjectProps } from "./SideProject";
@@ -51,6 +51,13 @@ export const Status = () => {
 };
 
 const SIDE_PROJECTS: SideProjectProps[] = [
+  {
+    Logo: Car,
+    title: "Garage Connect",
+    description:
+      "Online repair tracking 🚗",
+    url: "https://garage-connect-front.vercel.app/",
+  },
   {
     Logo: ImageUp,
     title: "Scaly",
