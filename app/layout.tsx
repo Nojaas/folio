@@ -1,9 +1,12 @@
-import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
+import ResizableNav from "@/app/components/ResizableNav";
+import { Toaster } from "@/components/ui/sonner";
+import { cn } from "@/lib/utils";
+import { Analytics } from "@vercel/analytics/next";
 import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
+import type { Metadata } from "next";
 import { Anek_Telugu } from "next/font/google";
 import "./globals.css";
-import { cn } from "@/lib/utils";
 
 const AnekTelugu = Anek_Telugu({
   subsets: ["latin"],
@@ -24,13 +27,19 @@ export default function RootLayout({
     <html
       lang="en"
       className={cn(
+        "dark",
         GeistSans.variable,
         AnekTelugu.variable,
         GeistMono.variable,
-        "font-sans h-full bg-background text-foreground"
+        "min-h-screen bg-background font-sans antialiased mx-auto"
       )}
     >
-      <body>{children}</body>
+      <body>
+        <ResizableNav />
+        {children}
+        <Toaster />
+        <Analytics />
+      </body>
     </html>
   );
 }

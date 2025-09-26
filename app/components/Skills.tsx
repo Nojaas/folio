@@ -1,47 +1,72 @@
+"use client";
+
+import Fade from "@/components/magicui/fade";
 import { Badge } from "@/components/ui/badge";
+import { DATA } from "@/data/resume";
 import { Section } from "./Section";
-import { ReactIcon } from "./icons/ReactIcon";
-import { TailwindIcon } from "./icons/TailwindIcon";
-import { Code } from "./Code";
-import { OpenAiIcon } from "./icons/OpenAiIcon";
 
 export const Skills = () => {
   return (
-    <Section className="flex flex-col items-start gap-4">
-      <Badge variant={"outline"}>Skills</Badge>
-      <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-        I love to work on..
-      </h2>
-      <div className="flex max-md:flex-col gap-4">
-        <div className="flex flex-col gap-4">
-          <ReactIcon
-            size={42}
-            className="animate-spin"
-            style={{ animationDuration: "10s" }}
-          />
-          <h3 className="text-2xl font-semibold tracking-tight mb-2">React</h3>
-          <p className="text-sm text-muted-foreground">
-            I build responsive web apps with <Code>React</Code>, using
-            <Code>Next.js</Code> for server-side rendering and performance
-            optimization.
-          </p>
+    <Section className="space-y-12 w-full py-12">
+      <Fade delay={0.1}>
+        <div className="flex flex-col items-center justify-center space-y-4 text-center">
+          <div className="space-y-2">
+            <Badge variant="outline" className="mb-4">
+              Compétences
+            </Badge>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+              Technologies & Expertise
+            </h2>
+            <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed max-w-2xl">
+              Un éventail de technologies modernes pour créer des applications
+              web robustes et innovantes
+            </p>
+          </div>
         </div>
-        <div className="flex flex-col gap-4">
-          <TailwindIcon size={42} />
-          <h3 className="text-2xl font-semibold tracking-tight mb-2">Tailwind</h3>
-          <p className="text-sm text-muted-foreground">
-          I design efficient, customizable UIs with <Code>TailwindCSS</Code>, ensuring a seamless and appealing user experience        </p>
-        </div>
-        <div className="flex flex-col gap-4">
-          <OpenAiIcon size={42} />
-          <h3 className="text-2xl font-semibold tracking-tight mb-2">
-            AI integration
-          </h3>
-          <p className="text-sm text-muted-foreground">
-            I integrate AI technologies into apps to enhance functionality and
-            provide intelligent, user-focused solutions.
-          </p>
-        </div>
+      </Fade>
+
+      <div className="max-w-4xl mx-auto space-y-8">
+        {/* Section Skills */}
+        <Fade delay={0.2}>
+          <div className="text-center">
+            <h3 className="text-xl font-semibold mb-4 text-card-foreground">
+              Technologies
+            </h3>
+            <div className="flex flex-wrap justify-center gap-3">
+              {DATA.skills.map((skill, index) => (
+                <Fade key={skill} delay={0.3 + index * 0.05}>
+                  <Badge
+                    variant="secondary"
+                    className="px-3 py-1.5 text-sm hover:bg-primary/10 hover:scale-105 transition-all duration-300"
+                  >
+                    {skill}
+                  </Badge>
+                </Fade>
+              ))}
+            </div>
+          </div>
+        </Fade>
+
+        {/* Section Tools */}
+        <Fade delay={0.4}>
+          <div className="text-center">
+            <h3 className="text-xl font-semibold mb-4 text-card-foreground">
+              Outils & Workflow
+            </h3>
+            <div className="flex flex-wrap justify-center gap-3">
+              {DATA.tools.map((tool, index) => (
+                <Fade key={tool} delay={0.5 + index * 0.05}>
+                  <Badge
+                    variant="outline"
+                    className="px-3 py-1.5 text-sm hover:bg-muted/50 hover:scale-105 transition-all duration-300"
+                  >
+                    {tool}
+                  </Badge>
+                </Fade>
+              ))}
+            </div>
+          </div>
+        </Fade>
       </div>
     </Section>
   );
