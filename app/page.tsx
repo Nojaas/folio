@@ -9,7 +9,6 @@ import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
 import { AuroraText } from "@/components/ui/aurora-text";
 import { Button } from "@/components/ui/button";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
-import { LightRays } from "@/components/ui/light-rays";
 import { DATA } from "@/data/resume";
 import { ArrowRight, Download } from "lucide-react";
 import Link from "next/link";
@@ -21,28 +20,6 @@ export default function Page() {
   return (
     <main className="flex flex-col min-h-[100dvh]">
       <section id="home" className="min-h-screen flex items-center relative">
-        {/* LightRays avec largeur 100% */}
-        <div className="absolute inset-0 w-full">
-          {/* Mode clair - effet plus prononcé */}
-          <div className="dark:hidden">
-            <LightRays
-              count={9}
-              color="rgba(160, 210, 255, 0.35)"
-              blur={42}
-              speed={12}
-            />
-          </div>
-          {/* Mode sombre - effet réduit */}
-          <div className="hidden dark:block">
-            <LightRays
-              count={5}
-              color="rgba(160, 210, 255, 0.15)"
-              blur={30}
-              speed={16}
-            />
-          </div>
-        </div>
-
         {/* Contenu centré avec contraintes de largeur */}
         <div className="relative z-10 mx-auto w-full max-w-4xl px-4 space-y-8">
           <div className="flex flex-col space-y-4 max-w-2xl mx-auto text-center">
