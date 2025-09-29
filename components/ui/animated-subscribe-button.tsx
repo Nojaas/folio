@@ -101,6 +101,8 @@ export const AnimatedSubscribeButton = React.forwardRef<
               }
               onClick?.(e);
             }}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

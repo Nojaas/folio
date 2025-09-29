@@ -19,9 +19,12 @@ const FADE_DELAY = 0.04;
 export default function Page() {
   return (
     <main className="flex flex-col min-h-[100dvh]">
-      <section id="home" className="min-h-screen flex items-center relative">
+      <section
+        id="home"
+        className="min-h-screen flex items-center relative px-4"
+      >
         {/* Contenu centré avec contraintes de largeur */}
-        <div className="relative z-10 mx-auto w-full max-w-4xl px-4 space-y-8">
+        <div className="relative z-10 mx-auto w-full max-w-4xl space-y-8">
           <div className="flex flex-col space-y-4 max-w-2xl mx-auto text-center">
             <Fade delay={FADE_DELAY * 0.5}>
               <Link href="#contact">
@@ -40,14 +43,26 @@ export default function Page() {
                 Hello, je suis Jason – {""}
                 <span className="dark:hidden">
                   <AuroraText
-                    colors={["#475569", "#64748b", "#60a5fa", "#94a3b8"]}
+                    colors={[
+                      "#3a3a3a",
+                      "#525252",
+                      "#6b7280",
+                      "#9ca3af",
+                      "#d1d5db",
+                    ]}
                   >
                     Développeur Full Stack
                   </AuroraText>
                 </span>
                 <span className="hidden dark:inline">
                   <AuroraText
-                    colors={["#94a3b8", "#a1a1aa", "#cbd5e1", "#a5b4fc"]}
+                    colors={[
+                      "#e5e7eb",
+                      "#d1d5db",
+                      "#9ca3af",
+                      "#6b7280",
+                      "#4b5563",
+                    ]}
                   >
                     Développeur Full Stack
                   </AuroraText>
@@ -68,19 +83,25 @@ export default function Page() {
                 <HoverBorderGradient
                   containerClassName="rounded-md w-full sm:w-auto"
                   as="div"
-                  className="dark:bg-black bg-white text-black dark:text-white flex items-center justify-center gap-2 px-4 py-2"
+                  className="dark:bg-black bg-white text-black dark:text-white flex items-center justify-center gap-2 px-4 py-2 group"
                 >
-                  <Download size={18} />
+                  <Download
+                    size={18}
+                    className="transition-transform duration-300 ease-in-out group-hover:translate-y-[-2px] group-hover:scale-110"
+                  />
                   <span>Télécharger mon CV</span>
                 </HoverBorderGradient>
               </Link>
               <Button
                 asChild
                 variant="default"
-                className="w-fit sm:w-auto px-4 py-2"
+                className="w-fit sm:w-auto px-4 py-2 group"
               >
                 <Link href="#projects" className="gap-2">
-                  <ArrowRight size={18} />
+                  <ArrowRight
+                    size={18}
+                    className="transition-transform duration-300 ease-in-out group-hover:translate-x-1 group-hover:rotate-3"
+                  />
                   Découvrir mes réalisations
                 </Link>
               </Button>
@@ -113,8 +134,8 @@ export default function Page() {
           </div>
         </Fade>
         <Fade delay={FADE_DELAY * 4}>
-          <div className="max-w-3xl mx-auto px-4 sm:px-6">
-            <p className="prose max-w-none text-pretty font-sans text-base sm:text-[17px] leading-relaxed text-neutral-700 dark:prose-invert dark:text-neutral-300 whitespace-pre-line">
+          <div className="max-w-3xl mx-auto">
+            <p className="prose max-w-none text-pretty font-sans text-base text-center sm:text-[17px] leading-relaxed text-neutral-700 dark:prose-invert dark:text-neutral-300 whitespace-pre-line">
               {DATA.summary}
             </p>
           </div>

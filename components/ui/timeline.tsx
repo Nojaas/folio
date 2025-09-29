@@ -33,10 +33,10 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
       ref={containerRef}
     >
       <div className="max-w-4xl mx-auto py-20 px-4 md:px-8 lg:px-10">
-        <h2 className="text-lg md:text-4xl mb-4 font-bold tracking-tighter max-w-4xl">
+        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
           Mon parcours
         </h2>
-        <p className="text-muted-foreground text-sm md:text-base max-w-sm">
+        <p className="max-w-md text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
           Découvrez mon parcours académique et professionnel, de la formation à
           l&apos;expérience.
         </p>
@@ -55,7 +55,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
             </div>
 
             <div className="relative pl-0 sm:pl-16 md:pl-8 flex-1">
-              <h3 className="md:hidden block text-xl sm:text-2xl mb-3 sm:mb-4 text-left font-bold text-neutral-500 dark:text-neutral-500">
+              <h3 className="md:hidden block text-xl sm:text-2xl mb-3 mt-1.25 sm:mb-4 text-left font-bold text-neutral-500 dark:text-neutral-500">
                 {item.title}
               </h3>
               {item.content}{" "}

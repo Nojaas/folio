@@ -1,5 +1,5 @@
 import { Icons } from "@/public/icons";
-import { Briefcase, Contact, HomeIcon, Laptop } from "lucide-react";
+import { Briefcase, Contact, Download, HomeIcon, Laptop } from "lucide-react";
 const Scaly = "/videos/scaly.mp4";
 const Kanboard = "/videos/kanboard.mp4";
 const GarageConnect = "/videos/garageconnect.mp4";
@@ -26,6 +26,7 @@ Méthodique et organisé, j'apprécie autant le travail autonome que collaborati
     "Next.js",
     "Vue.js",
     "Nuxt.js",
+    "Pinia",
     "Typescript",
     "TailwindCSS",
     "Scss",
@@ -34,8 +35,6 @@ Méthodique et organisé, j'apprécie autant le travail autonome que collaborati
     "PostgreSQL",
     "Firebase",
     "REST APIs",
-    "Docker",
-    "Vercel",
     "AWS",
     "AI integration",
   ],
@@ -43,16 +42,17 @@ Méthodique et organisé, j'apprécie autant le travail autonome que collaborati
   tools: [
     "Git",
     "GitHub",
+    "Docker",
     "Postman",
+    "Vercel",
     "Jira",
     "Notion",
-    "Project Management",
     "Figma",
   ],
 
   navbar: [
     { href: "#home", icon: HomeIcon, label: "Accueil" },
-    { href: "#about", icon: HomeIcon, label: "Présentation" },
+    { href: "#about", icon: HomeIcon, label: "À propos" },
     { href: "#projects", icon: Laptop, label: "Projets" },
     { href: "#parcours", icon: Briefcase, label: "Parcours" },
     { href: "#contact", icon: Contact, label: "Contact" },
@@ -80,6 +80,11 @@ Méthodique et organisé, j'apprécie autant le travail autonome que collaborati
         name: "Appelez-moi",
         number: "0787739507",
         icon: Icons.phone,
+      },
+      cv: {
+        name: "Télécharger mon CV",
+        url: "/cv.pdf", // Vous devrez ajouter votre fichier CV dans le dossier public
+        icon: Download,
       },
     },
   },
@@ -174,7 +179,7 @@ Méthodique et organisé, j'apprécie autant le travail autonome que collaborati
       video: GarageConnect,
     },
     {
-      title: "Kanboard",
+      title: "Kanboard.",
       href: "https://kanboardapp.vercel.app",
       dates: "2025",
       active: true,

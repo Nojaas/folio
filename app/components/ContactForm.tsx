@@ -172,43 +172,47 @@ export function ContactForm() {
           gradientOpacity={0.6}
           className="p-0"
         >
-          <CardHeader className="border-b border-border p-6 [.border-b]:pb-4">
-            <CardTitle className="text-2xl">Contact</CardTitle>
-            <CardDescription className="flex flex-wrap items-center gap-1 text-balance">
+          <CardHeader className="border-b border-border p-4 sm:p-6 [.border-b]:pb-4">
+            <CardTitle className="text-xl sm:text-2xl">Contact</CardTitle>
+            <CardDescription className="flex flex-wrap items-center gap-1 text-balance text-sm sm:text-base">
               <span>Écrivez-moi ici ou via</span>
               <a
                 href={`mailto:${DATA.contact.email}`}
                 className="inline-flex items-center underline hover:text-primary transition-colors break-all"
               >
-                <span className="break-all">{DATA.contact.email}</span>
+                <span className="break-all text-xs sm:text-sm">
+                  {DATA.contact.email}
+                </span>
                 <span className="ml-1">
-                  <DATA.contact.social.email.icon size={16} />
+                  <DATA.contact.social.email.icon size={14} />
                 </span>
               </a>
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+          <CardContent className="p-4 sm:p-6">
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+              <div className="grid gap-1.5 sm:gap-2">
+                <Label htmlFor="email" className="text-sm">
+                  Email
+                </Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="votre.email@exemple.com"
+                  placeholder="email@exemple.com"
                   value={formData.email}
                   onChange={handleInputChange}
                   onBlur={handleBlur}
-                  className={
+                  className={`text-sm sm:text-base ${
                     errors.email && touched.email
                       ? "border-red-500 focus-visible:ring-red-500"
                       : ""
-                  }
+                  }`}
                 />
                 {errors.email && touched.email && (
-                  <p className="text-sm text-red-500 flex items-center gap-1">
+                  <p className="text-xs sm:text-sm text-red-500 flex items-center gap-1">
                     <svg
-                      className="w-4 h-4"
+                      className="w-3 h-3 sm:w-4 sm:h-4"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -222,26 +226,28 @@ export function ContactForm() {
                   </p>
                 )}
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="message">Message</Label>
+              <div className="grid gap-1.5 sm:gap-2">
+                <Label htmlFor="message" className="text-sm">
+                  Message
+                </Label>
                 <Textarea
                   id="message"
                   name="message"
-                  placeholder="Parlez-moi de votre projet ou de votre question..."
+                  placeholder="Votre message..."
                   value={formData.message}
                   onChange={handleInputChange}
                   onBlur={handleBlur}
-                  rows={4}
-                  className={
+                  rows={3}
+                  className={`text-sm sm:text-base resize-none ${
                     errors.message && touched.message
                       ? "border-red-500 focus-visible:ring-red-500"
                       : ""
-                  }
+                  }`}
                 />
                 {errors.message && touched.message && (
-                  <p className="text-sm text-red-500 flex items-center gap-1">
+                  <p className="text-xs sm:text-sm text-red-500 flex items-center gap-1">
                     <svg
-                      className="w-4 h-4"
+                      className="w-3 h-3 sm:w-4 sm:h-4"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -265,23 +271,27 @@ export function ContactForm() {
                   // La logique de soumission est gérée par le form onSubmit
                 }}
               >
-                <span className="inline-flex items-center">
+                <span className="inline-flex items-center text-sm sm:text-base">
                   {isSubmitting ? (
                     "Envoi..."
                   ) : (
                     <>
-                      Envoyer le message
+                      <span className="hidden sm:inline">
+                        Envoyer le message
+                      </span>
+                      <span className="sm:hidden">Envoyer</span>
                       <SendIcon
-                        className={`ml-1 size-4 transition-transform duration-300 ${
+                        className={`ml-1 size-3 sm:size-4 transition-transform duration-300 ${
                           isHovering ? "translate-x-1" : ""
                         }`}
                       />
                     </>
                   )}
                 </span>
-                <span className="inline-flex items-center">
-                  <CheckIcon className="mr-2 size-4" />
-                  Message envoyé
+                <span className="inline-flex items-center text-sm sm:text-base">
+                  <CheckIcon className="mr-1 sm:mr-2 size-3 sm:size-4" />
+                  <span className="hidden sm:inline">Message envoyé</span>
+                  <span className="sm:hidden">Envoyé</span>
                 </span>
               </AnimatedSubscribeButton>
             </form>

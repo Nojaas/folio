@@ -69,6 +69,7 @@ export default function ResizableNav() {
                   delay: 0.1 * idx,
                   type: "spring",
                 }}
+                whileTap={{ scale: 0.96 }}
                 className="w-fit relative text-2xl font-medium text-neutral-800 transition-colors hover:text-neutral-500 dark:text-neutral-200 dark:hover:text-neutral-400"
               >
                 {item.name}

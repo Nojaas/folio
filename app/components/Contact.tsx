@@ -43,17 +43,20 @@ export const Contact = ({ fadeDelay = 0.04 }: ContactProps) => {
                 <ContactCard
                   image="/avatar.jpg"
                   mediumImage={<DATA.contact.social.phone.icon size={14} />}
-                  name="Téléphone"
-                  description="Appelez-moi directement"
+                  name={DATA.contact.social.phone.name}
+                  description={DATA.contact.social.phone.number.replace(
+                    /(\d{2})(?=\d)/g,
+                    "$1 "
+                  )}
                   url={`tel:${DATA.contact.social.phone.number}`}
                   className="w-full"
                 />
                 <ContactCard
                   image="/avatar.jpg"
-                  mediumImage={<DATA.contact.social.GitHub.icon size={14} />}
-                  name="Mon github"
-                  description="Voir mes projets"
-                  url={DATA.contact.social.GitHub.url}
+                  mediumImage={<DATA.contact.social.cv.icon size={14} />}
+                  name={DATA.contact.social.cv.name}
+                  description="Format PDF"
+                  url={DATA.contact.social.cv.url}
                   className="w-full"
                 />
               </div>

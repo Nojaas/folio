@@ -5,7 +5,7 @@ export const Footer = () => {
   return (
     <footer className="bg-card dark:bg-background">
       <Section className="py-8 flex items-center justify-between">
-        <p className="text-muted-foreground text-sm">
+        <p className="text-muted-foreground text-xs sm:text-sm">
           © 2025 Jason Leroy. Tous droits réservés.
         </p>
         <div className="flex flex-row items-center gap-1">

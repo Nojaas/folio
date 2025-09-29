@@ -14,7 +14,7 @@ const AnekTelugu = Anek_Telugu({
 });
 
 export const metadata: Metadata = {
-  title: "Jason Leroy . Software Engineer",
+  title: "Jason Leroy . Développeur Full Stack",
   description: "Portfolio de Jason Leroy",
 };
 

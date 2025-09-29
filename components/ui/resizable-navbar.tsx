@@ -240,13 +240,17 @@ export const MobileNavMenu = ({
         >
           <button
             aria-label="Close menu"
-            className="absolute right-4 top-4 p-2 text-black dark:text-white"
+            className={cn(
+              "absolute right-2 top-2 inline-flex items-center justify-center rounded-full px-3 py-2",
+              "bg-white/70 backdrop-blur-xl text-black shadow-none",
+              "dark:bg-neutral-800/70 dark:backdrop-blur-xl dark:text-white"
+            )}
             onClick={(e) => {
               e.stopPropagation();
               onClose();
             }}
           >
-            <IconX />
+            <IconX className="h-5 w-5" />
           </button>
           <div
             className="w-full h-full pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
@@ -268,18 +272,28 @@ export const MobileNavToggle = ({
   onClick: () => void;
 }) => {
   return (
-    <button
+    <motion.button
       type="button"
       aria-label={isOpen ? "Close menu" : "Open menu"}
+      aria-expanded={isOpen}
       onClick={onClick}
+      whileTap={{ scale: 0.9 }}
       className={cn(
-        "relative inline-flex items-center justify-center rounded-full border px-3 py-2 backdrop-blur",
-        "bg-white/80 border-neutral-200 text-black",
-        "dark:bg-neutral-800/80 dark:border-neutral-700 dark:text-white"
+        "relative inline-flex items-center justify-center rounded-full border px-3 py-2",
+        "bg-white/70 backdrop-blur-xl border-neutral-200 text-black shadow-sm",
+        "dark:bg-neutral-800/70 dark:backdrop-blur-xl dark:border-neutral-700 dark:text-white"
       )}
     >
-      <IconMenu2 className="h-5 w-5" />
-    </button>
+      <motion.span
+        initial={false}
+        animate={{ rotate: isOpen ? 90 : 0, scale: isOpen ? 1.05 : 1 }}
+        transition={{ type: "spring", stiffness: 400, damping: 22 }}
+        className="relative"
+      >
+        <span className="absolute -inset-2 rounded-full bg-black/0 dark:bg-white/0 transition-colors" />
+        <IconMenu2 className="h-5 w-5" />
+      </motion.span>
+    </motion.button>
   );
 };
 
