@@ -83,7 +83,7 @@ Méthodique et organisé, j'apprécie autant le travail autonome que collaborati
       },
       cv: {
         name: "Télécharger mon CV",
-        url: "/cv.pdf", // Vous devrez ajouter votre fichier CV dans le dossier public
+        url: "/cv.pdf",
         icon: Download,
       },
     },

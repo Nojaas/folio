@@ -58,6 +58,7 @@ export const Contact = ({ fadeDelay = 0.04 }: ContactProps) => {
                   description="Format PDF"
                   url={DATA.contact.social.cv.url}
                   className="w-full"
+                  download={true}
                 />
               </div>
             </Fade>

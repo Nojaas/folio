@@ -1,3 +1,5 @@
+"use client";
+
 import { Contact } from "@/app/components/Contact";
 import { ProjectCard } from "@/app/components/ProjectCard";
 import { Section } from "@/app/components/Section";
@@ -12,11 +14,15 @@ import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { DATA } from "@/data/resume";
 import { ArrowRight, Download } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 import { Footer } from "./components/Footer";
 
 const FADE_DELAY = 0.04;
 
 export default function Page() {
+  const handleCVDownload = () => {
+    toast.success("CV téléchargé avec succès !");
+  };
   return (
     <main className="flex flex-col min-h-[100dvh]">
       <section
@@ -79,7 +85,7 @@ export default function Page() {
               delay={FADE_DELAY * 2}
               className="flex flex-col sm:flex-row gap-3 mt-6 justify-center items-center"
             >
-              <Link href="/cv.pdf" download>
+              <Link href="/cv.pdf" download onClick={handleCVDownload}>
                 <HoverBorderGradient
                   containerClassName="rounded-md w-full sm:w-auto"
                   as="div"

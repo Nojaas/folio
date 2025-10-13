@@ -1,8 +1,11 @@
+"use client";
+
 /* eslint-disable @next/next/no-img-element */
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export const ContactCard = (props: {
   image: string;
@@ -11,9 +14,21 @@ export const ContactCard = (props: {
   description: string;
   url: string;
   className?: string;
+  download?: boolean;
 }) => {
+  const handleClick = () => {
+    if (props.download) {
+      toast.success("CV téléchargé avec succès !");
+    }
+  };
+
   return (
-    <Link href={props.url} className={cn("w-full", props.className)}>
+    <Link
+      href={props.url}
+      download={props.download}
+      className={cn("w-full", props.className)}
+      onClick={handleClick}
+    >
       <Card className="p-3 bg-accent/10 hover:bg-accent/30 transition-colors group flex items-center gap-4 h-16">
         <div className="relative w-10 h-10">
           <img
