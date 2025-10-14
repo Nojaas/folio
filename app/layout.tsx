@@ -38,7 +38,7 @@ export default function RootLayout({
         <ResizableNav />
         {children}
         <Toaster />
-        <Analytics />
+        <Analytics scriptSrc="/mt-demo/script.js" endpoint="/mt-demo" />
       </body>
     </html>
   );
