@@ -1,7 +1,7 @@
+import { CustomAnalytics } from "@/app/components/CustomAnalytics";
 import ResizableNav from "@/app/components/ResizableNav";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
-import { Analytics } from "@vercel/analytics/next";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
@@ -38,7 +38,7 @@ export default function RootLayout({
         <ResizableNav />
         {children}
         <Toaster />
-        <Analytics />
+        <CustomAnalytics />
       </body>
     </html>
   );
