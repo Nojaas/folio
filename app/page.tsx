@@ -162,9 +162,13 @@ export default function Page() {
               </div>
             </div>
           </Fade>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 max-w-[1000px] mx-auto">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 max-w-[1000px] mx-auto items-stretch">
             {DATA.projects.map((project, id) => (
-              <Fade key={project.title} delay={FADE_DELAY * 6 + id * 0.05}>
+              <Fade
+                key={project.title}
+                delay={FADE_DELAY * 6 + id * 0.05}
+                className="h-full"
+              >
                 <ProjectCard
                   href={project.href}
                   key={project.title}

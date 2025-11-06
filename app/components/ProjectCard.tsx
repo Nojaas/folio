@@ -56,11 +56,11 @@ export function ProjectCard({
   return (
     <div className={cn("relative block p-2 h-full w-full", className)}>
       <Link href={safeHref} className="block h-full">
-        <div className="relative z-10 rounded-2xl cursor-pointer">
+        <div className="relative z-10 rounded-2xl cursor-pointer h-full">
           <MagicCard
             gradientColor={"var(--magic-card-gradient-color)"}
             gradientOpacity={0.6}
-            className="p-0"
+            className="p-0 h-full"
           >
             <div
               className={cn(
@@ -76,6 +76,7 @@ export function ProjectCard({
                       loop
                       muted
                       playsInline
+                      preload="auto"
                       className="pointer-events-none mx-auto h-40 w-full object-cover object-[40%_60%]"
                     />
                   ) : (
@@ -92,7 +93,7 @@ export function ProjectCard({
                 </div>
               )}
 
-              <div className="space-y-1">
+              <div className="space-y-1 flex-1 flex flex-col">
                 <h4 className="mt-1 text-base font-bold tracking-wide text-zinc-900 dark:text-zinc-100">
                   {title}
                 </h4>
@@ -105,8 +106,8 @@ export function ProjectCard({
                     .replace("www.", "")
                     .replace("/", "")}
                 </div>
-                <div className="mt-2 text-xs text-zinc-600 dark:text-zinc-400">
-                  <div className="prose max-w-full text-pretty font-sans dark:prose-invert">
+                <div className="mt-2 text-xs text-zinc-600 dark:text-zinc-400 flex-1">
+                  <div className="prose max-w-full text-pretty font-sans dark:prose-invert h-full">
                     <MarkdownComponent>{description}</MarkdownComponent>
                   </div>
                 </div>
