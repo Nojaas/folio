@@ -184,7 +184,7 @@ Méthodique et organisé, j'apprécie autant le travail autonome que collaborati
       dates: "2025",
       active: true,
       description:
-        "Application de gestion de tâches type Trello, construite avec Next.js, Prisma, Better Auth et PostgreSQL.",
+        "Application de gestion de projet en tableaux kanban, avec glisser-déposer des tâches, duplication rapide, personnalisation par couleurs et icônes, collaboration en temps réel et interface responsive.",
       technologies: [
         "Next.js",
         "Typescript",
