@@ -78,6 +78,14 @@ export function ProjectCard({
                       playsInline
                       preload="auto"
                       className="pointer-events-none mx-auto h-40 w-full object-cover object-[40%_60%]"
+                      style={
+                        {
+                          transform: "translateZ(0)",
+                          backfaceVisibility: "hidden",
+                          WebkitBackfaceVisibility: "hidden",
+                          willChange: "transform",
+                        } as React.CSSProperties
+                      }
                     />
                   ) : (
                     image && (
