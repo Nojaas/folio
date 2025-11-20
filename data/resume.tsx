@@ -32,11 +32,12 @@ Méthodique et organisé, j'apprécie autant le travail autonome que collaborati
     "Scss",
     "Node.js",
     "Prisma",
-    "PostgreSQL",
+    "SQL",
     "Firebase",
     "REST APIs",
     "AWS",
     "AI integration",
+    "CI/CD",
   ],
 
   tools: [
