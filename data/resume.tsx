@@ -15,7 +15,7 @@ export const DATA = {
   summary: `
 Passionné par l'informatique et l'innovation web depuis 2019, le développement m'offre une liberté créative unique pour résoudre tous types de problèmes et donner vie aux idées. Diplômé d'un Bachelor en développement web à HETIC et d'un Master CTO & Tech Lead à l'EEMI, j'ai acquis 4 ans d'expérience en alternance.
 
-Ce qui me motive ? L'amélioration constante de l'expérience utilisateur et l'innovation technique. Je privilégie React et Next.js pour créer des applications web modernes dans un environnement full JavaScript, en transformant chaque défi en solution élégante et efficace.
+Ce qui me motive ? L'amélioration constante de l'expérience utilisateur et l'innovation technique. Je privilégie React et Next.js pour créer des applications web modernes dans un environnement full TypeScript, en transformant chaque défi en solution élégante et efficace.
 
 Méthodique et organisé, j'apprécie autant le travail autonome que collaboratif. Mon objectif : créer des solutions innovantes qui font vraiment la différence pour les utilisateurs.`,
 
@@ -95,13 +95,13 @@ Méthodique et organisé, j'apprécie autant le travail autonome que collaborati
       company: "Perfmaker",
       badges: [],
       location: "Paris",
-      title: "Développeur front-end",
+      title: "Développeur full-stack",
       logoUrl: Icons.perfmaker,
       start: "2022",
       end: "2024",
       technologies: ["React", "Jira", "GTM", "Postman"],
       description:
-        "Développement d'applications web full-stack avec architecture moderne. Conception d'interfaces réactives intégrées à des APIs RESTful, implémentation de composants dynamiques avec gestion d'état optimisée. Optimisation des performances (Core Web Vitals, lazy loading) et maintenance évolutive des applications.",
+        "Développement d'applications web full-stack avec architecture moderne. Conception d'interfaces réactives intégrées à des APIs RESTful, implémentation de composants dynamiques avec gestion d'état optimisée. CI/CD et maintenance évolutive des applications.",
     },
     {
       company: "Tylto",
