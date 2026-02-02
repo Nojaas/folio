@@ -1,0 +1,46 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <rect width="1200" height="630" fill="url(#gradient)"/>
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Grid pattern overlay -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  
+  <!-- Main content -->
+  <g transform="translate(600, 315)">
+    <!-- SendFlow logo/text -->
+    <text x="0" y="-60" font-family="Arial, sans-serif" font-size="72" font-weight="700" fill="white" text-anchor="middle">
+      SendFlow
+    </text>
+    
+    <!-- Email icon -->
+    <g transform="translate(-40, -20)">
+      <rect x="0" y="0" width="80" height="60" rx="8" fill="none" stroke="white" stroke-width="3"/>
+      <path d="M 5 5 L 40 35 L 75 5" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    
+    <!-- Coming Soon text -->
+    <text x="0" y="80" font-family="Arial, sans-serif" font-size="48" font-weight="600" fill="rgba(255,255,255,0.9)" text-anchor="middle">
+      Bientôt disponible
+    </text>
+    
+    <!-- Subtitle -->
+    <text x="0" y="130" font-family="Arial, sans-serif" font-size="24" fill="rgba(255,255,255,0.7)" text-anchor="middle">
+      Marketing Automation • Email Campaigns • Analytics
+    </text>
+  </g>
+  
+  <!-- Decorative elements -->
+  <circle cx="150" cy="100" r="60" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="1050" cy="530" r="80" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="200" cy="500" r="40" fill="rgba(255,255,255,0.03)"/>
+  <circle cx="1000" cy="150" r="50" fill="rgba(255,255,255,0.03)"/>
+</svg>

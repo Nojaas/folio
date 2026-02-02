@@ -18,8 +18,7 @@ export const Skills = () => {
               Technologies & Expertise
             </h2>
             <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed max-w-2xl">
-              Un éventail de technologies modernes pour créer des applications
-              web robustes et innovantes
+              Technologies modernes pour des applications performantes
             </p>
           </div>
         </div>
