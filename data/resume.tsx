@@ -189,26 +189,23 @@ Méthodique et organisé, j'apprécie autant le travail autonome que collaborati
 
   projects: [
     {
-      title: "SendFlow",
-      href: "",
+      title: "Krono",
+      href: "https://krono-extension.vercel.app/",
       dates: "2026",
       active: true,
       description:
-        "Plateforme SaaS de Marketing Automation pour l'envoi et le suivi de campagnes email/SMS à grande échelle. Architecture hexagonale avec patterns enterprise-grade, gestion des files d'attente avec Redis et BullMQ.",
+        "Extension Chrome de productivité : sessions focus chronométrées, redirection des sites bloqués pendant la session et suivi des stats via presets ou domaines personnalisés.",
       technologies: [
-        "Next.js",
-        "NestJS",
-        "Typescript",
-        "Prisma",
-        "PostgreSQL",
-        "Redis",
-        "BullMQ",
+        "Plasmo",
+        "TypeScript",
+        "React",
         "TailwindCSS",
-        "Zustand",
+        "Chrome Extensions API",
       ],
       links: [],
-      image: "/sendflow-soon.svg",
+      image: "",
       video: "",
+      linkPreview: true,
     },
     {
       title: "Kanboard.",

@@ -178,6 +178,7 @@ export default function Page() {
                   tags={project.technologies}
                   image={project.image}
                   video={project.video}
+                  linkPreview={project.linkPreview}
                   links={project.links}
                 />
               </Fade>

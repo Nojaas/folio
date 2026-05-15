@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import { ProjectLinkPreview } from "./ProjectLinkPreview";
 const MarkdownComponent = ReactMarkdown as unknown as (props: {
   children?: React.ReactNode;
 }) => React.ReactElement;
@@ -18,6 +19,7 @@ interface Props {
   link?: string;
   image?: string;
   video?: string;
+  linkPreview?: boolean;
   links?: readonly {
     icon: React.ReactNode;
     type: string;
@@ -35,6 +37,7 @@ export function ProjectCard({
   link,
   image,
   video,
+  linkPreview,
   links,
   className,
 }: Props) {
@@ -67,9 +70,11 @@ export function ProjectCard({
                 "flex flex-col h-full rounded-2xl p-4 overflow-hidden"
               )}
             >
-              {(video || image) && (
-                <div className="-m-4 mb-0">
-                  {video ? (
+              {(video || image || linkPreview) && (
+                <div className={linkPreview ? undefined : "-m-4 mb-0"}>
+                  {linkPreview && safeHref !== "#" ? (
+                    <ProjectLinkPreview url={safeHref} />
+                  ) : video ? (
                     <video
                       src={video}
                       autoPlay
