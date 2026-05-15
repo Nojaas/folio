@@ -14,8 +14,8 @@ export function ProjectLinkPreview({ url }: ProjectLinkPreviewProps) {
   const hostname = getHostname(url);
 
   return (
-    <div className="-m-4 mb-0 overflow-hidden">
-      <div className="flex items-center gap-2 border-b border-neutral-200/80 bg-neutral-100 px-3 py-1.5 dark:border-neutral-800 dark:bg-neutral-900">
+    <div className="flex h-40 flex-col overflow-hidden">
+      <div className="flex shrink-0 items-center gap-2 border-b border-neutral-200/80 bg-neutral-100 px-3 py-1 dark:border-neutral-800 dark:bg-neutral-900">
         <div className="flex shrink-0 gap-1" aria-hidden>
           <span className="size-2 rounded-full bg-red-400/90" />
           <span className="size-2 rounded-full bg-amber-400/90" />
@@ -25,7 +25,7 @@ export function ProjectLinkPreview({ url }: ProjectLinkPreviewProps) {
           {hostname}
         </span>
       </div>
-      <div className="relative h-40 w-full overflow-hidden bg-neutral-50 dark:bg-neutral-950">
+      <div className="relative min-h-0 flex-1 overflow-hidden bg-neutral-50 dark:bg-neutral-950">
         <iframe
           src={url}
           title={`Aperçu de ${hostname}`}

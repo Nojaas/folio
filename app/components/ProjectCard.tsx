@@ -71,7 +71,7 @@ export function ProjectCard({
               )}
             >
               {(video || image || linkPreview) && (
-                <div className={linkPreview ? undefined : "-m-4 mb-0"}>
+                <div className="-m-4 mb-0">
                   {linkPreview && safeHref !== "#" ? (
                     <ProjectLinkPreview url={safeHref} />
                   ) : video ? (
