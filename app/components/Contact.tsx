@@ -1,76 +1,63 @@
-import Fade from "@/components/magicui/fade";
+"use client";
+
+import { DownFastLink } from "@/app/components/DownFastLink";
+import { ContentRail, Section } from "@/app/components/Section";
 import { DATA } from "@/data/resume";
-import { ContactCard } from "./ContactCard";
-import { ContactForm } from "./ContactForm";
-import { Section } from "./Section";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { toast } from "sonner";
+import { ScrollItemsReveal } from "./ScrollItemsReveal";
 
-interface ContactProps {
-  fadeDelay?: number;
-}
+export const Contact = () => {
+  const { t } = useLocale();
 
-export const Contact = ({ fadeDelay = 0.04 }: ContactProps) => {
-  const FADE_DELAY = fadeDelay;
+  const actions = [
+    {
+      label: t.contact.contact,
+      href: `mailto:${DATA.contact.email}`,
+    },
+    {
+      label: t.contact.linkedin,
+      href: DATA.contact.social.LinkedIn.url,
+      external: true,
+    },
+    {
+      label: t.contact.cv,
+      href: "/cv.pdf",
+      download: true,
+    },
+  ] as const;
+
+  const handleCVDownload = () => {
+    toast.success(t.contact.cvToast);
+  };
 
   return (
-    <Section id="contact" className="space-y-12 w-full py-12">
-      <Fade delay={FADE_DELAY * 16}>
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <div className="space-y-2">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
-              Contactez moi
-            </h2>
-            <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Par message, téléphone ou LinkedIn : choisissez le moyen qui vous
-              convient.
-            </p>
-          </div>
-        </div>
-      </Fade>
-
-      <Fade delay={FADE_DELAY * 17}>
-        <div className="flex flex-col lg:flex-row justify-center items-stretch gap-8 mx-auto w-full">
-          <div className="space-y-4 flex-1 basis-0">
-            <Fade delay={FADE_DELAY * 18}>
-              <div className="flex flex-col gap-4 items-center w-full max-w-lg mx-auto">
-                <ContactCard
-                  image="/avatar.jpg"
-                  mediumImage={<DATA.contact.social.LinkedIn.icon size={14} />}
-                  name="LinkedIn"
-                  description="Connectez-vous avec moi"
-                  url={DATA.contact.social.LinkedIn.url}
-                  className="w-full"
-                />
-                <ContactCard
-                  image="/avatar.jpg"
-                  mediumImage={<DATA.contact.social.phone.icon size={14} />}
-                  name={DATA.contact.social.phone.name}
-                  description={DATA.contact.social.phone.number.replace(
-                    /(\d{2})(?=\d)/g,
-                    "$1 "
-                  )}
-                  url={`tel:${DATA.contact.social.phone.number}`}
-                  className="w-full"
-                />
-                <ContactCard
-                  image="/avatar.jpg"
-                  mediumImage={<DATA.contact.social.cv.icon size={14} />}
-                  name={DATA.contact.social.cv.name}
-                  description="Format PDF"
-                  url={DATA.contact.social.cv.url}
-                  className="w-full"
-                  download={true}
-                />
-              </div>
-            </Fade>
-          </div>
-
-          <div className="space-y-4 flex-1 basis-0">
-            <Fade delay={FADE_DELAY * 19.5}>
-              <ContactForm />
-            </Fade>
-          </div>
-        </div>
-      </Fade>
+    <Section
+      id="contact"
+      className="flex min-h-[100dvh] w-full flex-col justify-center py-24 sm:py-32"
+    >
+      <ContentRail>
+        <ScrollItemsReveal
+          lockWhenComplete
+          className="flex flex-col gap-4 sm:gap-5"
+        >
+          {actions.map((action) => (
+            <DownFastLink
+              key={action.label}
+              label={action.label}
+              href={action.href}
+              external={"external" in action && action.external}
+              download={"download" in action && action.download}
+              onClick={
+                "download" in action && action.download
+                  ? handleCVDownload
+                  : undefined
+              }
+              className="text-2xl font-medium tracking-tight text-foreground sm:text-3xl"
+            />
+          ))}
+        </ScrollItemsReveal>
+      </ContentRail>
     </Section>
   );
 };

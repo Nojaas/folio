@@ -1,44 +1,69 @@
-import ResizableNav from "@/app/components/ResizableNav";
+import { ClickSparkProvider } from "@/app/components/ClickSparkProvider";
+import { SmoothScroll } from "@/app/components/SmoothScroll";
+import { ThemeProvider } from "@/app/components/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/next";
-import { GeistMono } from "geist/font/mono";
-import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
-import { Anek_Telugu } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
 
-const AnekTelugu = Anek_Telugu({
+const fontSans = Inter({
   subsets: ["latin"],
-  variable: "--font-caption",
+  variable: "--font-sans",
+});
+
+const fontMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
 });
 
 export const metadata: Metadata = {
-  title: "Jason Leroy . Développeur Full Stack",
-  description: "Portfolio de Jason Leroy",
+  metadataBase: new URL("https://jason-leroy.com"),
+  title: "Jason Leroy · Fullstack Developer",
+  description: "Jason Leroy's portfolio",
+  alternates: {
+    languages: {
+      fr: "/",
+      en: "/en",
+    },
+  },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const locale = headersList.get("x-locale") === "en" ? "en" : "fr";
+
   return (
     <html
-      lang="en"
+      lang={locale}
+      suppressHydrationWarning
       className={cn(
-        "dark",
-        GeistSans.variable,
-        AnekTelugu.variable,
-        GeistMono.variable,
-        "min-h-screen bg-background font-sans antialiased mx-auto"
+        fontSans.variable,
+        fontMono.variable,
+        "dark min-h-screen bg-background font-sans antialiased",
       )}
     >
       <body>
-        <ResizableNav />
-        {children}
-        <Toaster />
-        <Analytics />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if("scrollRestoration"in history)history.scrollRestoration="manual";window.scrollTo(0,0);`,
+          }}
+        />
+        <ThemeProvider>
+          <SmoothScroll>
+            <ClickSparkProvider>
+              <div className="relative">{children}</div>
+            </ClickSparkProvider>
+            <Toaster />
+            <Analytics />
+          </SmoothScroll>
+        </ThemeProvider>
       </body>
     </html>
   );

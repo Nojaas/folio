@@ -1,108 +1,69 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { AnimatePresence, motion } from "motion/react";
 import { Moon, Sun } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { flushSync } from "react-dom";
+import { useTheme } from "next-themes";
+import { useCallback, useEffect, useState } from "react";
 
 type Props = {
   className?: string;
 };
 
 export const AnimatedThemeToggler = ({ className }: Props) => {
+  const { setTheme } = useTheme();
+  const { locale } = useLocale();
   const [isDark, setIsDark] = useState(false);
-  const [, setIsAnimating] = useState<null | "sun" | "moon">(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const updateTheme = () => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    };
-
-    updateTheme();
-
-    const observer = new MutationObserver(updateTheme);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-
-    return () => observer.disconnect();
+    setIsDark(document.documentElement.classList.contains("dark"));
+    requestAnimationFrame(() => setReady(true));
   }, []);
 
-  const toggleTheme = useCallback(async () => {
-    if (!buttonRef.current) return;
-
-    // Always rotate 90deg: right for sun, left for moon
+  const toggleTheme = useCallback(() => {
     const nextIsDark = !isDark;
-    setIsAnimating(nextIsDark ? "moon" : "sun");
+    setIsDark(nextIsDark);
+    document.documentElement.classList.toggle("dark", nextIsDark);
+    setTheme(nextIsDark ? "dark" : "light");
+  }, [isDark, setTheme]);
 
-    await document.startViewTransition(() => {
-      flushSync(() => {
-        setIsDark(nextIsDark);
-        document.documentElement.classList.toggle("dark");
-        localStorage.setItem("theme", nextIsDark ? "dark" : "light");
-      });
-    }).ready;
-
-    const { top, left, width, height } =
-      buttonRef.current.getBoundingClientRect();
-    const x = left + width / 2;
-    const y = top + height / 2;
-    const maxRadius = Math.hypot(
-      Math.max(left, window.innerWidth - left),
-      Math.max(top, window.innerHeight - top)
-    );
-
-    document.documentElement.animate(
-      {
-        clipPath: [
-          `circle(0px at ${x}px ${y}px)`,
-          `circle(${maxRadius}px at ${x}px ${y}px)`,
-        ],
-      },
-      {
-        duration: 500,
-        easing: "ease-in-out",
-        pseudoElement: "::view-transition-new(root)",
-      }
-    );
-
-    setTimeout(() => setIsAnimating(null), 400);
-  }, [isDark]);
+  const ariaLabel =
+    locale === "en"
+      ? isDark
+        ? "Switch to light mode"
+        : "Switch to dark mode"
+      : isDark
+        ? "Passer en mode clair"
+        : "Passer en mode sombre";
 
   return (
     <button
-      ref={buttonRef}
+      type="button"
       onClick={toggleTheme}
+      aria-label={ariaLabel}
       className={cn(
-        "items-center flex justify-center whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-muted/80 h-11 w-11 z-20",
-        className
+        "relative z-20 flex size-fit items-center justify-center overflow-hidden text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none",
+        className,
       )}
     >
-      {isDark ? (
-        <span
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={isDark ? "moon" : "sun"}
+          initial={ready ? { opacity: 0, y: isDark ? 8 : -8 } : false}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: isDark ? -8 : 8 }}
+          transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
           className="inline-flex"
-          style={{
-            display: "inline-flex",
-            transition: "transform 0.4s cubic-bezier(0.4,0,0.2,1)",
-            transform: `rotate(0)`,
-          }}
         >
-          <Moon />
-        </span>
-      ) : (
-        <span
-          className="inline-flex"
-          style={{
-            display: "inline-flex",
-            transition: "transform 0.4s cubic-bezier(0.4,0,0.2,1)",
-            transform: `rotate(90deg)`,
-          }}
-        >
-          <Sun />
-        </span>
-      )}
+          {isDark ? (
+            <Moon className="size-3.5" strokeWidth={1.75} />
+          ) : (
+            <Sun className="size-3.5" strokeWidth={1.75} />
+          )}
+        </motion.span>
+      </AnimatePresence>
     </button>
   );
 };
