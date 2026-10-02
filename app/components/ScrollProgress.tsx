@@ -1,8 +1,14 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "motion/react";
 
-/** Thick inset rail — left edge, 10px inset */
+/** Thick inset rail — right edge, 10px inset */
 export function ScrollProgress() {
   const reducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
@@ -18,7 +24,7 @@ export function ScrollProgress() {
   }
 
   return (
-    <div className="pointer-events-none fixed top-[18%] left-2.5 z-[70] h-[64%] w-0.5 bg-foreground/10">
+    <div className="pointer-events-none fixed top-[18%] right-1.25 z-[70] h-[64%] w-0.5 bg-foreground/10">
       <motion.div
         className="absolute inset-x-0 top-0 h-full origin-top bg-foreground"
         style={{ scaleY }}

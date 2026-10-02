@@ -42,7 +42,7 @@ export function ProjectsList({
             <span className="text-[11px] tracking-[0.08em] tabular-nums text-muted-foreground/45 transition-colors duration-300 group-hover:text-foreground">
               {n}
             </span>
-            <span className="text-2xl font-medium tracking-tight text-foreground sm:text-3xl">
+            <span className="text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
               <DownFastLabel label={project.title} />
             </span>
             <p className="text-xs leading-relaxed text-muted-foreground/70 transition-colors duration-300 group-hover:text-foreground sm:text-[13px]">

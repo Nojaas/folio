@@ -1,9 +1,9 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import { AnimatePresence, motion } from "motion/react";
+import { cn } from "@/lib/utils";
 import { Moon, Sun } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useTheme } from "next-themes";
 import { useCallback, useEffect, useState } from "react";
 
@@ -58,9 +58,9 @@ export const AnimatedThemeToggler = ({ className }: Props) => {
           className="inline-flex"
         >
           {isDark ? (
-            <Moon className="size-3.5" strokeWidth={1.75} />
+            <Moon className="size-4.5" strokeWidth={1.75} />
           ) : (
-            <Sun className="size-3.5" strokeWidth={1.75} />
+            <Sun className="size-4.5" strokeWidth={1.75} />
           )}
         </motion.span>
       </AnimatePresence>

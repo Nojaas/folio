@@ -11,24 +11,23 @@ export const Footer = () => {
   const { t, locale } = useLocale();
 
   return (
-    <footer className="relative w-full px-2.5 pb-2.5">
-      <div className="flex w-full items-center justify-between gap-3">
+    <footer className="w-full px-2.5 pb-2.5">
+      <div className="grid w-full grid-cols-2 items-center gap-3 sm:grid-cols-[1fr_auto_1fr]">
         <Link
           href={localePath(locale, "/#home")}
-          className="text-[13px] font-medium tracking-tight text-foreground"
+          className="justify-self-start text-[13px] font-medium tracking-tight text-foreground"
         >
           {DATA.name}
         </Link>
-        <p className="text-[13px] text-foreground">©{year}</p>
-      </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-2.5 hidden justify-center sm:flex">
         <DownFastLink
           label={t.footer.role}
           href={DATA.contact.social.GitHub.url}
           external
-          className="pointer-events-auto text-[13px] text-foreground"
+          className="hidden justify-self-center text-[13px] text-foreground sm:inline-flex"
         />
+
+        <p className="justify-self-end text-[13px] text-foreground">©{year}</p>
       </div>
     </footer>
   );

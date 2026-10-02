@@ -43,8 +43,8 @@ export default function SiteNav() {
 
   return (
     <header className="relative w-full px-2.5 pt-2.5">
-      <div className="flex w-full items-center justify-between gap-3">
-        <NavItem delay={DELAY} className="inline-flex">
+      <div className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-3">
+        <NavItem delay={DELAY} className="inline-flex justify-self-start">
           <Link
             href={localePath(locale, "/#home")}
             className="text-[13px] font-medium tracking-tight text-foreground"
@@ -53,18 +53,7 @@ export default function SiteNav() {
           </Link>
         </NavItem>
 
-        <div className="flex items-center gap-2 sm:gap-3">
-          <NavItem delay={DELAY * 3} className="inline-flex">
-            <LanguageToggle />
-          </NavItem>
-          <NavItem delay={DELAY * 4} className="inline-flex">
-            <AnimatedThemeToggler />
-          </NavItem>
-        </div>
-      </div>
-
-      <div className="pointer-events-none absolute inset-x-0 top-2.5 flex justify-center">
-        <NavItem delay={DELAY * 2} className="pointer-events-auto inline-flex">
+        <NavItem delay={DELAY * 2} className="inline-flex justify-self-center">
           <motion.a
             href={`mailto:${DATA.contact.email}`}
             aria-label={t.nav.available}
@@ -79,6 +68,15 @@ export default function SiteNav() {
             <AvailabilityDot />
           </motion.a>
         </NavItem>
+
+        <div className="flex items-center justify-self-end gap-2 sm:gap-3">
+          <NavItem delay={DELAY * 3} className="inline-flex">
+            <LanguageToggle />
+          </NavItem>
+          <NavItem delay={DELAY * 4} className="inline-flex">
+            <AnimatedThemeToggler />
+          </NavItem>
+        </div>
       </div>
     </header>
   );

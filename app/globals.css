@@ -206,21 +206,44 @@
 html {
   /* Lenis handles smooth scrolling */
   scroll-behavior: auto;
+  overflow-x: hidden;
+  overscroll-behavior: none;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE / old Edge */
 }
 
 html::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
   display: none; /* Chrome, Safari, Edge */
+  background: transparent;
 }
 
 body {
+  overflow-x: hidden;
+  overscroll-behavior: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
 body::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
   display: none;
+  background: transparent;
+}
+
+/* Catch nested overflow scrollbars (Windows hero / transforms) */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none;
+  background: transparent;
 }
 
 @keyframes availability-appear {
@@ -254,7 +277,7 @@ body::-webkit-scrollbar {
   perspective: 2000px;
   font-kerning: none;
   /* Extra room right/bottom so `.` and descenders (Y) aren’t clipped */
-  clip-path: polygon(-2% -8%, 102% -8%, 102% 135%, -2% 135%);
+  clip-path: polygon(-2% -10%, 102% -10%, 102% 150%, -2% 150%);
 }
 
 .animated-title-char {

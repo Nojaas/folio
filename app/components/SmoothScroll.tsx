@@ -28,9 +28,12 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       root
       options={{
         autoRaf: true,
-        lerp: 0.1,
-        wheelMultiplier: 1.15,
-        touchMultiplier: 1.1,
+        lerp: 0.12,
+        wheelMultiplier: 1.1,
+        // Keep native touch momentum — avoids rubber-band fights at page edges
+        syncTouch: true,
+        touchMultiplier: 1,
+        overscroll: false,
         smoothWheel: true,
         anchors: {
           offset: ANCHOR_OFFSET,

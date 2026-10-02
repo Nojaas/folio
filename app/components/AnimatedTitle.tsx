@@ -86,7 +86,8 @@ export function AnimatedTitle({
   };
 
   const titleClass = cn(
-    "block w-full pb-[0.18em] font-semibold leading-none tracking-tight text-foreground",
+    // pb keeps descenders (Y) inside the overflow box — no nested scroll
+    "block w-full overflow-x-clip overflow-y-clip pb-[0.32em] font-semibold leading-none tracking-tight text-foreground",
     className,
   );
 

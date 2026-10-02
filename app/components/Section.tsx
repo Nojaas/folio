@@ -2,7 +2,7 @@
 
 import { useCenterLabelWidth } from "@/app/components/useCenterLabelWidth";
 import { cn } from "@/lib/utils";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithoutRef, CSSProperties, ReactNode } from "react";
 
 type SectionProps = ComponentPropsWithoutRef<"section">;
 
@@ -15,8 +15,8 @@ export const Section = ({ className, children, ...rest }: SectionProps) => {
 };
 
 /**
- * Content left edge aligns with the left edge of the centered
- * “Fullstack developer” / “Disponible” labels.
+ * Mobile: left-aligned with px-2.5 (10px).
+ * Desktop: left edge aligns with centered “Fullstack developer”.
  */
 export function ContentRail({
   children,
@@ -29,12 +29,15 @@ export function ContentRail({
 
   return (
     <div
-      className={cn("pr-2.5", className)}
-      style={{
-        paddingLeft: labelWidth
-          ? `max(0.625rem, calc(50% - ${labelWidth / 2}px))`
-          : "max(0.625rem, 50%)",
-      }}
+      className={cn(
+        "w-full px-2.5 sm:pr-2.5 sm:pl-[max(0.625rem,calc(50%-var(--center-label-half,0px)))]",
+        className,
+      )}
+      style={
+        {
+          "--center-label-half": labelWidth ? `${labelWidth / 2}px` : "0px",
+        } as CSSProperties
+      }
     >
       <div className="w-full max-w-2xl">{children}</div>
     </div>

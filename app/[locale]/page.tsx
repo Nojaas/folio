@@ -33,9 +33,9 @@ export default function HomePage() {
       <main className="flex min-h-[100dvh] flex-col">
         <section
           id="home"
-          className="relative flex h-[100dvh] flex-col justify-end overflow-x-hidden px-2.5 pb-3"
+          className="relative flex h-[100dvh] flex-col justify-end overflow-x-clip overflow-y-clip px-2.5 pb-5"
         >
-          <div className="w-full overflow-x-hidden overflow-y-visible">
+          <div className="w-full overflow-x-clip overflow-y-clip">
             <HeroTitle />
           </div>
         </section>
@@ -47,7 +47,7 @@ export default function HomePage() {
           <ContentRail>
             <ScrollLineReveal
               key={locale}
-              className="text-pretty text-lg font-semibold leading-tight tracking-tight text-foreground sm:text-2xl"
+              className="text-pretty text-lg font-medium leading-tight tracking-tight text-foreground sm:text-2xl"
             >
               <p>{t.about.p1}</p>
               <p>{t.about.p2}</p>
@@ -65,7 +65,7 @@ export default function HomePage() {
           <ScrollLineReveal
             key={`projects-title-${locale}`}
             lockWhenComplete
-            className="pl-[2.5rem] text-3xl font-bold tracking-tighter text-foreground sm:text-5xl"
+            className="px-2.5 text-4xl font-bold tracking-tighter text-foreground sm:text-5xl"
           >
             <h2>
               {t.projects.titleLine1} <br />

@@ -37,10 +37,7 @@ export const Contact = () => {
       className="flex min-h-[100dvh] w-full flex-col justify-center py-24 sm:py-32"
     >
       <ContentRail>
-        <ScrollItemsReveal
-          lockWhenComplete
-          className="flex flex-col gap-4 sm:gap-5"
-        >
+        <ScrollItemsReveal lockWhenComplete className="flex flex-col">
           {actions.map((action) => (
             <DownFastLink
               key={action.label}
@@ -53,7 +50,7 @@ export const Contact = () => {
                   ? handleCVDownload
                   : undefined
               }
-              className="text-2xl font-medium tracking-tight text-foreground sm:text-3xl"
+              className="text-4xl font-medium tracking-tight text-foreground sm:text-5xl"
             />
           ))}
         </ScrollItemsReveal>
