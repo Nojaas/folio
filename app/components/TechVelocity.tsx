@@ -11,7 +11,7 @@ export function TechVelocity() {
   return (
     <section
       id="stack"
-      className="relative flex h-[100dvh] w-full flex-col justify-center overflow-hidden"
+      className="relative flex h-[100dvh] w-full max-w-[100vw] flex-col justify-center overflow-x-clip overflow-y-clip"
       aria-label={t.stack.label}
     >
       <ScrollVelocity

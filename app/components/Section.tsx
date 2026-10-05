@@ -16,7 +16,7 @@ export const Section = ({ className, children, ...rest }: SectionProps) => {
 
 /**
  * Mobile: left-aligned with px-2.5 (10px).
- * Desktop: left edge aligns with centered “Fullstack developer”.
+ * Desktop: left edge aligns with centered “Disponible / Available”.
  */
 export function ContentRail({
   children,

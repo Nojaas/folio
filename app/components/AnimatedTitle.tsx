@@ -86,8 +86,9 @@ export function AnimatedTitle({
   };
 
   const titleClass = cn(
-    // pb keeps descenders (Y) inside the overflow box — no nested scroll
-    "block w-full overflow-x-clip overflow-y-clip pb-[0.32em] font-semibold leading-none tracking-tight text-foreground",
+    // leading > 1 gives descender room (Y) inside the line box — no padding-bottom
+    // Do NOT use overflow-x-clip alone: CSS turns overflow-y into auto → nested scroll trap on touch
+    "block w-full pb-0 font-semibold leading-[1.12] tracking-tight text-foreground",
     className,
   );
 

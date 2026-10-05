@@ -5,6 +5,7 @@ import { Footer } from "@/app/components/Footer";
 import { HeroTitle } from "@/app/components/HeroTitle";
 import { ProjectsList } from "@/app/components/ProjectsList";
 import { ScrollLineReveal } from "@/app/components/ScrollLineReveal";
+import { ScrollOrbBackground } from "@/app/components/ScrollOrbBackground";
 import { ScrollProgress } from "@/app/components/ScrollProgress";
 import { ContentRail, Section } from "@/app/components/Section";
 import SiteNav from "@/app/components/SiteNav";
@@ -26,24 +27,33 @@ export default function HomePage() {
 
   return (
     <>
+      <ScrollOrbBackground />
       <div className="absolute inset-x-0 top-0 z-50">
         <SiteNav />
       </div>
       <ScrollProgress />
-      <main className="flex min-h-[100dvh] flex-col">
+      <main className="relative z-10 flex min-h-[100dvh] w-full max-w-[100vw] flex-col overflow-x-clip">
         <section
           id="home"
-          className="relative flex h-[100dvh] flex-col justify-end overflow-x-clip overflow-y-clip px-2.5 pb-5"
+          className="relative flex h-[100dvh] flex-col justify-end px-2.5 pb-0"
         >
-          <div className="w-full overflow-x-clip overflow-y-clip">
+          <div className="w-full">
             <HeroTitle />
           </div>
         </section>
 
         <section
           id="about"
-          className="relative flex min-h-[100dvh] flex-col justify-center py-24 sm:py-32"
+          className="relative flex min-h-[100dvh] flex-col justify-center space-y-12 py-24 sm:py-32"
         >
+          <ScrollLineReveal
+            key={`about-title-${locale}`}
+            lockWhenComplete
+            className="px-2.5 text-4xl font-bold tracking-tighter text-foreground sm:text-5xl"
+          >
+            <h2>{t.about.title}</h2>
+          </ScrollLineReveal>
+
           <ContentRail>
             <ScrollLineReveal
               key={locale}

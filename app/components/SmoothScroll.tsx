@@ -22,16 +22,23 @@ function ScrollToTopOnLoad() {
   return null;
 }
 
+/**
+ * Lenis everywhere.
+ * - Desktop: smoothWheel
+ * - Mobile: syncTouch false → native touch momentum (best perf per Lenis docs);
+ *   Lenis still runs and syncs scroll for motion/anchors. Never call stop()
+ *   (`.lenis-stopped { overflow: clip }` locks scrolling).
+ */
 export function SmoothScroll({ children }: { children: ReactNode }) {
   return (
     <ReactLenis
       root
       options={{
         autoRaf: true,
-        lerp: 0.12,
-        wheelMultiplier: 1.1,
-        // Keep native touch momentum — avoids rubber-band fights at page edges
-        syncTouch: true,
+        lerp: 0.1,
+        wheelMultiplier: 1,
+        // Native touch — no smoothed touch, avoids iOS jank / edge fights
+        syncTouch: false,
         touchMultiplier: 1,
         overscroll: false,
         smoothWheel: true,
