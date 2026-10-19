@@ -127,9 +127,10 @@ export function PillTabs<T extends string>({
       {items.map((item) => {
         const isActive = active === item.id;
         const sharedClass = cn(
-          "relative z-[1] rounded-full px-2.5 py-1.5 text-center text-[12px] font-medium tracking-tight sm:px-3.5 sm:text-[13px]",
+          // Taller tap targets on mobile; desktop stays compact
+          "relative z-[1] rounded-full px-3 py-2.5 text-center text-[13px] font-medium tracking-tight sm:px-3.5 sm:py-1.5 sm:text-[13px]",
           "transition-colors duration-300 ease-out",
-          uppercase && "text-[11px] uppercase tracking-wide sm:text-[12px]",
+          uppercase && "text-[12px] uppercase tracking-wide sm:text-[12px]",
           wide && "flex-1",
           isActive ? tone.active : tone.idle,
         );

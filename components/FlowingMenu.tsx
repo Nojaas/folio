@@ -48,6 +48,8 @@ export interface FlowingMenuProps {
   showArrow?: boolean;
   imageShape?: "pill" | "rounded" | "circle";
   intro?: boolean;
+  /** Hover band + marquee — disable on touch / mobile */
+  hoverEnabled?: boolean;
   activeIndex?: number;
   onItemClick?: (
     item: FlowingMenuItem,
@@ -162,6 +164,7 @@ function FlowingMenu({
   showArrow = false,
   imageShape = "pill",
   intro = true,
+  hoverEnabled = true,
   activeIndex,
   onItemClick,
   ariaLabel = "Menu",
@@ -224,6 +227,7 @@ function FlowingMenu({
     bandRadius: Math.max(0, bandRadius),
     carryContent,
     dimInactive,
+    hoverEnabled,
     onItemClick,
   };
   const settingsRef = useRef(settings);
@@ -661,26 +665,29 @@ function FlowingMenu({
         });
       });
 
-      const count = rows.current.filter((row) => row?.item).length;
-      const start = 650 + count * 70;
-      for (let index = 0; index < count; index++) {
+      // Band sweep only when hover UX is enabled (skip on mobile)
+      if (settingsRef.current.hoverEnabled) {
+        const count = rows.current.filter((row) => row?.item).length;
+        const start = 650 + count * 70;
+        for (let index = 0; index < count; index++) {
+          loop.timers.push(
+            setTimeout(
+              () => {
+                if (!loop.touched) goToRef.current(index, "top");
+              },
+              start + index * 170,
+            ),
+          );
+        }
         loop.timers.push(
           setTimeout(
             () => {
-              if (!loop.touched) goToRef.current(index, "top");
+              if (!loop.touched) releaseRef.current("bottom");
             },
-            start + index * 170,
+            start + count * 170 + 120,
           ),
         );
       }
-      loop.timers.push(
-        setTimeout(
-          () => {
-            if (!loop.touched) releaseRef.current("bottom");
-          },
-          start + count * 170 + 120,
-        ),
-      );
     };
 
     const io = new IntersectionObserver(
@@ -709,6 +716,7 @@ function FlowingMenu({
   }, []);
 
   const onPointerMove = (event: ReactPointerEvent<HTMLUListElement>) => {
+    if (!settingsRef.current.hoverEnabled) return;
     if (event.pointerType === "touch") return;
     stopIntro();
     const c = cursor.current;
@@ -729,6 +737,7 @@ function FlowingMenu({
   };
 
   const onPointerLeave = (event: ReactPointerEvent<HTMLUListElement>) => {
+    if (!settingsRef.current.hoverEnabled) return;
     if (event.pointerType === "touch") return;
     const list = listRef.current;
     const b = band.current;
@@ -741,16 +750,19 @@ function FlowingMenu({
 
   const linkHandlers = (item: FlowingMenuItem, index: number) => ({
     onPointerDown: (event: ReactPointerEvent<HTMLElement>) => {
+      if (!settingsRef.current.hoverEnabled) return;
       if (event.pointerType !== "touch") return;
       stopIntro();
       goTo(index, halfOf(event.clientY, index));
     },
     onFocus: (event: ReactFocusEvent<HTMLElement>) => {
+      if (!settingsRef.current.hoverEnabled) return;
       if (!event.currentTarget.matches(":focus-visible")) return;
       stopIntro();
       goTo(index, "top");
     },
     onBlur: (event: ReactFocusEvent<HTMLElement>) => {
+      if (!settingsRef.current.hoverEnabled) return;
       const next = event.relatedTarget as Node | null;
       if (next && listRef.current?.contains(next)) return;
       release("bottom");

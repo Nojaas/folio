@@ -38,7 +38,10 @@ export type Dictionary = {
     title: string;
     p1: string;
     p2: string;
-    p3: string;
+    /** Linked word → contact (e.g. Disponible / Available) */
+    p3Available: string;
+    /** Rest of p3 after the linked word (leading space included) */
+    p3Rest: string;
     /** Circular badge around the CV download */
     cvRing: string;
   };
@@ -89,7 +92,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
       title: "À propos.",
       p1: "Je développe aujourd'hui principalement en React et TypeScript, avec un vrai back NodeJS. J'ai travaillé sur des back-offices, des SaaS et des applications métier, avec une approche full-stack qui va de l'interface jusqu'à la mise en production.",
       p2: "Je ne me contente pas d'exécuter une demande. J'aime comprendre le besoin derrière une fonctionnalité pour faire des choix techniques et UI qui ont du sens.",
-      p3: "Disponible en freelance, ou à plein temps en hybride à Paris, là où je peux voir concrètement l'impact de ce que je construis.",
+      p3Available: "Disponible",
+      p3Rest:
+        " en freelance, ou à plein temps en hybride à Paris, là où je peux voir concrètement l'impact de ce que je construis.",
       cvRing: "Voir le CV (PDF) * ",
     },
     projects: {
@@ -152,7 +157,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
       title: "About.",
       p1: "These days I mainly work with React and TypeScript, backed by a real Node.js back end. I've worked on back offices, SaaS products and business applications, with a full-stack approach that runs from the interface all the way to production.",
       p2: "I don't just carry out requests. I like to understand the need behind a feature so I can make technical and UI choices that make sense.",
-      p3: "Available for freelance work, or full time in a hybrid setup in Paris, where I can see the real impact of what I build.",
+      p3Available: "Available",
+      p3Rest:
+        " for freelance work, or full time in a hybrid setup in Paris, where I can see the real impact of what I build.",
       cvRing: "RESUME (PDF) * ",
     },
     projects: {

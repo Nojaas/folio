@@ -1,12 +1,12 @@
 "use client";
 
+import { AboutAvailableLink } from "@/app/components/AboutAvailableLink";
 import { AboutCvBadge } from "@/app/components/AboutCvBadge";
 import { Contact } from "@/app/components/Contact";
 import { Footer } from "@/app/components/Footer";
 import { HeroMetallicTitle } from "@/app/components/HeroMetallicTitle";
 import { ProcessMarquee } from "@/app/components/ProcessMarquee";
 import { ProjectsFlowingMenu } from "@/app/components/ProjectsFlowingMenu";
-import { ScrollLineReveal } from "@/app/components/ScrollLineReveal";
 import { ScrollProgress } from "@/app/components/ScrollProgress";
 import { ScrollStrandsBackground } from "@/app/components/ScrollStrandsBackground";
 import { ContentRail, Section } from "@/app/components/Section";
@@ -55,16 +55,15 @@ export default function HomePage() {
           </div>
 
           <ContentRail>
-            <ScrollLineReveal
-              key={locale}
-              autoPlayOnSection="about"
-              className="text-pretty text-lg font-medium leading-tight tracking-tight text-foreground sm:text-xl"
-            >
+            <div className="space-y-6 text-pretty text-lg font-medium leading-tight tracking-tight text-foreground sm:space-y-8 sm:text-xl">
               <p>{t.about.p1}</p>
               <p>{t.about.p2}</p>
-              <p>{t.about.p3}</p>
-            </ScrollLineReveal>
-            <div className="flex justify-center mt-6">
+              <p>
+                <AboutAvailableLink label={t.about.p3Available} />
+                {t.about.p3Rest}
+              </p>
+            </div>
+            <div className="mt-6 flex justify-center">
               <AboutCvBadge />
             </div>
           </ContentRail>
