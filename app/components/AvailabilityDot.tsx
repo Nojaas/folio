@@ -24,7 +24,7 @@ export function AvailabilityDot({
     <span
       aria-hidden
       className={cn(
-        "size-1.5 rounded-full bg-foreground",
+        "size-1.5 rounded-full bg-white",
         ready ? "animate-availability-dot" : "opacity-0",
         className,
       )}

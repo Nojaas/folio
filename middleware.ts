@@ -1,6 +1,29 @@
+import type { Locale } from "@/lib/i18n/dictionaries";
+import {
+  isLocaleCookie,
+  localeFromAcceptLanguage,
+  LOCALE_COOKIE,
+  LOCALE_COOKIE_MAX_AGE,
+} from "@/lib/i18n/locale-cookie";
 import { NextRequest, NextResponse } from "next/server";
 
 const PUBLIC_FILE = /\.[^/]+$/;
+
+function withLocaleCookie(response: NextResponse, locale: Locale) {
+  response.cookies.set(LOCALE_COOKIE, locale, {
+    path: "/",
+    maxAge: LOCALE_COOKIE_MAX_AGE,
+    sameSite: "lax",
+  });
+  response.headers.set("x-locale", locale);
+  return response;
+}
+
+function resolveLocale(request: NextRequest): Locale {
+  const cookie = request.cookies.get(LOCALE_COOKIE)?.value;
+  if (isLocaleCookie(cookie)) return cookie;
+  return localeFromAcceptLanguage(request.headers.get("accept-language"));
+}
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -20,19 +43,23 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // EN stays under /en
+  // Explicit EN
   if (pathname === "/en" || pathname.startsWith("/en/")) {
     const response = NextResponse.next();
-    response.headers.set("x-locale", "en");
-    return response;
+    return withLocaleCookie(response, "en");
   }
 
-  // FR has no prefix — rewrite to /fr internally
+  // Unprefixed = FR URLs. Honor cookie / Accept-Language first.
+  const preferred = resolveLocale(request);
+  if (preferred === "en") {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname === "/" ? "/en" : `/en${pathname}`;
+    return withLocaleCookie(NextResponse.redirect(url), "en");
+  }
+
   const url = request.nextUrl.clone();
   url.pathname = pathname === "/" ? "/fr" : `/fr${pathname}`;
-  const response = NextResponse.rewrite(url);
-  response.headers.set("x-locale", "fr");
-  return response;
+  return withLocaleCookie(NextResponse.rewrite(url), "fr");
 }
 
 export const config = {

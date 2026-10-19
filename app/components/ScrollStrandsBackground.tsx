@@ -1,8 +1,6 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
-import { useTheme } from "next-themes";
 import {
   motion,
   useMotionValue,
@@ -12,38 +10,26 @@ import {
   useSpring,
   useTransform,
 } from "motion/react";
+import { useTheme } from "next-themes";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
-const Orb = dynamic(() => import("@/app/components/Orb"), { ssr: false });
+const Strands = dynamic(() => import("@/components/Strands"), { ssr: false });
 
-/** Resolve theme `--background` to an rgb() string the Orb shader can parse */
-function useThemeBackgroundColor() {
-  const { resolvedTheme } = useTheme();
-  const [color, setColor] = useState("rgb(42, 42, 46)");
-
-  useEffect(() => {
-    const probe = document.createElement("div");
-    probe.style.backgroundColor = "var(--background)";
-    probe.style.position = "absolute";
-    probe.style.visibility = "hidden";
-    document.body.appendChild(probe);
-    const resolved = getComputedStyle(probe).backgroundColor;
-    document.body.removeChild(probe);
-    if (resolved) setColor(resolved);
-  }, [resolvedTheme]);
-
-  return color;
-}
+/** Calm at top of page → Siri energy once scrolling (dark) */
+const ENERGY_CALM_DARK = 0.18;
+/** Light mode starts fully calm */
+const ENERGY_CALM_LIGHT = 0;
+const ENERGY_SIRI = 0.72;
 
 /**
- * Fixed Orb behind the page:
- * small & centered above the hero name → limited zoom on scroll,
- * light magnetic pull toward the cursor (stronger while small).
+ * Fixed Strands behind the page:
+ * centered → zoom on scroll, magnetic cursor pull.
+ * energy: calm → siri with scroll; hover/click via Strands interactive + clickPulse.
  */
-export function ScrollOrbBackground() {
+export function ScrollStrandsBackground() {
   const reducedMotion = useReducedMotion();
   const { resolvedTheme } = useTheme();
-  const backgroundColor = useThemeBackgroundColor();
   const { scrollYProgress } = useScroll();
   const [mounted, setMounted] = useState(false);
 
@@ -51,21 +37,29 @@ export function ScrollOrbBackground() {
     setMounted(true);
   }, []);
 
-  // Theme-dependent styles only after mount — avoids SSR hydration mismatch
   const isLight = mounted && resolvedTheme === "light";
+  const energyCalm = isLight ? ENERGY_CALM_LIGHT : ENERGY_CALM_DARK;
 
-  const scale = useTransform(scrollYProgress, [0, 1], [0.36, 1.55]);
+  const scale = useTransform(scrollYProgress, [0, 1], [0.36, 0.88]);
   const scrollY = useTransform(scrollYProgress, [0, 1], ["-10vh", "0vh"]);
-  const opacityDark = useTransform(
+  const opacity = useTransform(
     scrollYProgress,
     [0, 0.7, 1],
     [0.92, 0.85, 0.65],
   );
-  const opacityLight = useTransform(
+
+  const energyTarget = useTransform(
     scrollYProgress,
-    [0, 0.7, 1],
-    [0.85, 0.72, 0.5],
+    [0, 0.5],
+    [energyCalm, ENERGY_SIRI],
   );
+  const energySpring = useSpring(energyTarget, {
+    stiffness: 90,
+    damping: 26,
+    mass: 0.5,
+  });
+  const [energy, setEnergy] = useState(ENERGY_CALM_DARK);
+  useMotionValueEvent(energySpring, "change", setEnergy);
 
   const magnetStrength = useTransform(scrollYProgress, [0, 1], [42, 12]);
   const strengthRef = useMotionValue(42);
@@ -76,12 +70,8 @@ export function ScrollOrbBackground() {
   const magnetX = useSpring(rawX, { stiffness: 90, damping: 18, mass: 0.4 });
   const magnetY = useSpring(rawY, { stiffness: 90, damping: 18, mass: 0.4 });
 
-  const [nearOrb, setNearOrb] = useState(false);
-
   useEffect(() => {
     if (reducedMotion) return;
-
-    // Magnet is pointer-only — skip on touch to avoid work during scroll
     if (window.matchMedia("(pointer: coarse)").matches) return;
 
     const onMove = (e: MouseEvent) => {
@@ -90,15 +80,11 @@ export function ScrollOrbBackground() {
       const s = strengthRef.get();
       rawX.set(nx * s);
       rawY.set(ny * s);
-
-      const dist = Math.hypot(nx, ny);
-      setNearOrb(dist < 0.55);
     };
 
     const onLeave = () => {
       rawX.set(0);
       rawY.set(0);
-      setNearOrb(false);
     };
 
     window.addEventListener("mousemove", onMove, { passive: true });
@@ -114,33 +100,36 @@ export function ScrollOrbBackground() {
   }
 
   return (
-    <div
+    <motion.div
       aria-hidden
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 1.2 }}
     >
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <motion.div style={{ y: scrollY }}>
           <motion.div
             className={cn(
               "h-[min(100vw,100vh)] w-[min(100vw,100vh)] will-change-transform",
-              isLight && "mix-blend-screen",
             )}
             style={{
               x: magnetX,
               y: magnetY,
               scale,
-              opacity: isLight ? opacityLight : opacityDark,
+              opacity,
             }}
           >
-            <Orb
-              hoverIntensity={0.3}
-              rotateOnHover
-              forceHoverState={nearOrb}
-              backgroundColor={backgroundColor}
+            <Strands
+              className="h-full w-full"
+              energy={energy}
+              lightMode={isLight}
+              globalPointer
+              intro
             />
           </motion.div>
         </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }

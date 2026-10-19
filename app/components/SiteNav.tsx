@@ -1,14 +1,10 @@
 "use client";
 
-import { AvailabilityDot } from "@/app/components/AvailabilityDot";
-import { DownFastLabel } from "@/app/components/DownFastLink";
+import { DynamicIsland } from "@/app/components/dynamic-island";
 import { LanguageToggle } from "@/app/components/LanguageToggle";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
-import { DATA } from "@/data/resume";
-import { localePath } from "@/lib/i18n/dictionaries";
-import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { ISLAND_SLOT_ID } from "@/lib/constants/layout";
 import { motion } from "motion/react";
-import Link from "next/link";
 
 const DELAY = 0.2;
 
@@ -38,46 +34,28 @@ function NavItem({
   );
 }
 
-export default function SiteNav() {
-  const { t, locale } = useLocale();
-
+export function SiteNav() {
   return (
-    <header className="relative w-full px-2.5 pt-2.5">
-      <div className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-3">
-        <NavItem delay={DELAY} className="inline-flex justify-self-start">
-          <Link
-            href={localePath(locale, "/#home")}
-            className="text-[13px] font-medium tracking-tight text-foreground"
-          >
-            {DATA.name}
-          </Link>
-        </NavItem>
+    <header className="relative w-full px-[10px] pt-[10px]">
+      <div className="flex w-full items-start justify-between">
+        {/* Anchor for available-state island position */}
+        <div
+          id={ISLAND_SLOT_ID}
+          aria-hidden
+          className="h-9 w-[7.5rem] shrink-0"
+        />
 
-        <NavItem delay={DELAY * 2} className="inline-flex justify-self-center">
-          <motion.a
-            href={`mailto:${DATA.contact.email}`}
-            aria-label={t.nav.available}
-            initial="rest"
-            whileHover="hover"
-            className="inline-flex items-center gap-1.5 text-[13px] text-foreground"
-          >
-            <DownFastLabel
-              label={t.nav.available}
-              className="text-[13px] text-foreground"
-            />
-            <AvailabilityDot />
-          </motion.a>
-        </NavItem>
-
-        <div className="flex items-center justify-self-end gap-2 sm:gap-3">
-          <NavItem delay={DELAY * 3} className="inline-flex">
+        <div className="flex items-center gap-2 pl-[10px] sm:gap-3">
+          <NavItem delay={DELAY} className="inline-flex">
             <LanguageToggle />
           </NavItem>
-          <NavItem delay={DELAY * 4} className="inline-flex">
+          <NavItem delay={DELAY * 2} className="inline-flex">
             <AnimatedThemeToggler />
           </NavItem>
         </div>
       </div>
+
+      <DynamicIsland />
     </header>
   );
 }

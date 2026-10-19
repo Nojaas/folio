@@ -2,6 +2,10 @@
 
 import { DownFastLink } from "@/app/components/DownFastLink";
 import { localePath } from "@/lib/i18n/dictionaries";
+import {
+  LOCALE_COOKIE,
+  LOCALE_COOKIE_MAX_AGE,
+} from "@/lib/i18n/locale-cookie";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
 
@@ -15,8 +19,12 @@ export function LanguageToggle({ className }: LanguageToggleProps) {
 
   return (
     <DownFastLink
-      label={next.toUpperCase()}
+      label={locale.toUpperCase()}
+      nextLabel={next.toUpperCase()}
       href={localePath(next)}
+      onClick={() => {
+        document.cookie = `${LOCALE_COOKIE}=${next};path=/;max-age=${LOCALE_COOKIE_MAX_AGE};samesite=lax`;
+      }}
       className={cn(
         "text-[13px] uppercase tracking-tight text-foreground",
         className,

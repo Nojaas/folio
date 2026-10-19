@@ -4,8 +4,7 @@ import { DownFastLink } from "@/app/components/DownFastLink";
 import { ContentRail, Section } from "@/app/components/Section";
 import { DATA } from "@/data/resume";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import { toast } from "sonner";
-import { ScrollItemsReveal } from "./ScrollItemsReveal";
+import { ScrollItemsReveal } from "@/app/components/ScrollItemsReveal";
 
 export const Contact = () => {
   const { t } = useLocale();
@@ -27,10 +26,6 @@ export const Contact = () => {
     },
   ] as const;
 
-  const handleCVDownload = () => {
-    toast.success(t.contact.cvToast);
-  };
-
   return (
     <Section
       id="contact"
@@ -45,11 +40,6 @@ export const Contact = () => {
               href={action.href}
               external={"external" in action && action.external}
               download={"download" in action && action.download}
-              onClick={
-                "download" in action && action.download
-                  ? handleCVDownload
-                  : undefined
-              }
               className="text-4xl font-medium tracking-tight text-foreground sm:text-5xl"
             />
           ))}

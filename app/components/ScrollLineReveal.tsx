@@ -1,9 +1,15 @@
 "use client";
 
+import {
+  SECTION_ARRIVED_EVENT,
+  type SectionArrivedDetail,
+} from "@/app/components/dynamic-island/events";
 import { measureLines, type LineSegment } from "@/lib/measure-lines";
 import { cn } from "@/lib/utils";
 import {
+  animate,
   motion,
+  useMotionValue,
   useMotionValueEvent,
   useReducedMotion,
   useScroll,
@@ -13,6 +19,7 @@ import {
 import {
   Children,
   isValidElement,
+  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -20,74 +27,129 @@ import {
   type ReactNode,
 } from "react";
 
-type LinePiece = {
-  segments: LineSegment[];
-  paragraphIndex: number;
-  index: number;
+type WordToken = {
+  text: string;
+  className?: string;
+  wordIndex: number;
 };
 
-function LineContent({ segments }: { segments: LineSegment[] }) {
-  return (
-    <>
-      {segments.map((segment, i) =>
-        segment.className ? (
-          <span key={i} className={segment.className}>
-            {segment.text}
-          </span>
-        ) : (
-          <span key={i}>{segment.text}</span>
-        ),
-      )}
-    </>
-  );
+type LineWords = {
+  paragraphIndex: number;
+  lineKey: string;
+  words: WordToken[];
+};
+
+/** Dim state for words not yet revealed */
+const DIM_OPACITY = 0.14;
+
+/** How much each word's fade overlaps neighbors (1 = no overlap) */
+const WORD_OVERLAP = 1.85;
+
+function smoothstep(t: number) {
+  const x = Math.min(1, Math.max(0, t));
+  return x * x * (3 - 2 * x);
 }
 
-function ScrubLine({
-  segments,
-  index,
-  total,
+function segmentsToWords(
+  segments: LineSegment[],
+  wordIndexStart: number,
+): { words: WordToken[]; nextIndex: number } {
+  const words: WordToken[] = [];
+  let wordIndex = wordIndexStart;
+
+  for (const segment of segments) {
+    const parts = segment.text.split(/(\s+)/);
+    for (const part of parts) {
+      if (!part) continue;
+      if (/^\s+$/.test(part)) {
+        const prev = words[words.length - 1];
+        if (prev) prev.text += part;
+        else {
+          words.push({
+            text: part,
+            className: segment.className,
+            wordIndex: wordIndex++,
+          });
+        }
+        continue;
+      }
+      words.push({
+        text: part,
+        className: segment.className,
+        wordIndex: wordIndex++,
+      });
+    }
+  }
+
+  return { words, nextIndex: wordIndex };
+}
+
+function FadeWord({
+  text,
+  className,
+  wordIndex,
+  totalWords,
   progress,
   locked,
 }: {
-  segments: LineSegment[];
-  index: number;
-  total: number;
+  text: string;
+  className?: string;
+  wordIndex: number;
+  totalWords: number;
   progress: MotionValue<number>;
   locked: boolean;
 }) {
-  const start = index / (total + 1);
-  const end = (index + 1) / (total + 1);
-  const scrubY = useTransform(progress, [start, end], ["115%", "0%"]);
+  const step = 1 / (totalWords + 1);
+  const start = wordIndex * step;
+  const end = Math.min(1, start + step * WORD_OVERLAP);
+
+  const opacity = useTransform(progress, (p) => {
+    if (locked) return 1;
+    if (p <= start) return DIM_OPACITY;
+    if (p >= end) return 1;
+    const t = smoothstep((p - start) / (end - start));
+    return DIM_OPACITY + (1 - DIM_OPACITY) * t;
+  });
 
   return (
-    <div className="scroll-line-mask">
-      <motion.div
-        className="scroll-line will-change-transform"
-        style={locked ? { y: "0%" } : { y: scrubY }}
-      >
-        <LineContent segments={segments} />
-      </motion.div>
-    </div>
+    <motion.span
+      className={cn("inline text-foreground will-change-[opacity]", className)}
+      style={{ opacity: locked ? 1 : opacity }}
+    >
+      {text}
+    </motion.span>
   );
 }
 
 type ScrollLineRevealProps = {
   children: ReactNode;
   className?: string;
-  /** Once fully revealed, keep text visible (no re-hide on scroll up) */
+  /** Once fully filled, keep color (no fade-back on scroll up) */
   lockWhenComplete?: boolean;
+  /**
+   * When the island navigates to this section id, finish the reveal with a
+   * soft autoplay (nav scroll often stops before scrub completes).
+   */
+  autoPlayOnSection?: string;
 };
 
+/** Word-by-word scroll opacity reveal (dim → full). */
 export function ScrollLineReveal({
   children,
   className,
   lockWhenComplete = true,
+  autoPlayOnSection,
 }: ScrollLineRevealProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
-  const [lines, setLines] = useState<LinePiece[]>([]);
+  const [lines, setLines] = useState<LineWords[]>([]);
+  const [totalWords, setTotalWords] = useState(0);
   const [locked, setLocked] = useState(false);
   const reducedMotion = useReducedMotion();
+  const scrub = useMotionValue(0);
+  const autoplayingRef = useRef(false);
+  const lockedRef = useRef(false);
+  const autoControlsRef = useRef<{ stop: () => void } | null>(null);
 
   const paragraphs = Children.toArray(children).filter(
     (child): child is ReactElement<{
@@ -98,29 +160,92 @@ export function ScrollLineReveal({
 
   const { scrollYProgress } = useScroll({
     target: rootRef,
-    offset: ["start 80%", "center 35%"],
+    // Done once the text block sits around the viewport center
+    offset: ["start 90%", "center center"],
   });
 
   useMotionValueEvent(scrollYProgress, "change", (value) => {
-    if (!lockWhenComplete || locked) return;
-    // Last line finishes around total/(total+1) — wait until fully done
-    if (value >= 0.98) setLocked(true);
+    if (lockedRef.current || autoplayingRef.current) return;
+    scrub.set(value);
+    if (lockWhenComplete && value >= 0.98) {
+      lockedRef.current = true;
+      setLocked(true);
+    }
   });
+
+  useEffect(() => {
+    if (!autoPlayOnSection || reducedMotion) return;
+
+    let delayTimer: number | null = null;
+
+    const onArrived = (event: Event) => {
+      const id = (event as CustomEvent<SectionArrivedDetail>).detail?.id;
+      if (id !== autoPlayOnSection) return;
+      if (lockedRef.current || autoplayingRef.current) return;
+
+      // Let the page scroll land before starting the reveal
+      if (delayTimer != null) window.clearTimeout(delayTimer);
+      delayTimer = window.setTimeout(() => {
+        delayTimer = null;
+        if (lockedRef.current || autoplayingRef.current) return;
+
+        const from = Math.max(scrub.get(), scrollYProgress.get());
+        if (from >= 0.98) {
+          lockedRef.current = true;
+          setLocked(true);
+          return;
+        }
+
+        scrub.set(from);
+        autoplayingRef.current = true;
+        autoControlsRef.current?.stop();
+        const duration = 0.55 + (1 - from) * 0.85;
+        autoControlsRef.current = animate(scrub, 1, {
+          duration,
+          ease: [0.22, 1, 0.36, 1],
+          onComplete: () => {
+            autoplayingRef.current = false;
+            autoControlsRef.current = null;
+            lockedRef.current = true;
+            setLocked(true);
+          },
+        });
+      }, 700);
+    };
+
+    window.addEventListener(SECTION_ARRIVED_EVENT, onArrived);
+    return () => {
+      if (delayTimer != null) window.clearTimeout(delayTimer);
+      autoControlsRef.current?.stop();
+      autoControlsRef.current = null;
+      window.removeEventListener(SECTION_ARRIVED_EVENT, onArrived);
+    };
+  }, [autoPlayOnSection, reducedMotion, scrub, scrollYProgress]);
 
   useLayoutEffect(() => {
     const measure = () => {
       const root = measureRef.current;
       if (!root) return;
 
-      const next: LinePiece[] = [];
-      let index = 0;
+      const next: LineWords[] = [];
+      let wordIndex = 0;
+      let lineSerial = 0;
+
       Array.from(root.children).forEach((child, paragraphIndex) => {
         if (!(child instanceof HTMLElement)) return;
         measureLines(child).forEach((segments) => {
-          next.push({ segments, paragraphIndex, index: index++ });
+          const { words, nextIndex } = segmentsToWords(segments, wordIndex);
+          wordIndex = nextIndex;
+          next.push({
+            paragraphIndex,
+            lineKey: `${paragraphIndex}-${lineSerial++}`,
+            words,
+          });
         });
       });
+
       setLines(next);
+      setTotalWords(wordIndex);
     };
 
     measure();
@@ -138,7 +263,7 @@ export function ScrollLineReveal({
     return <div className={className}>{children}</div>;
   }
 
-  const groups = lines.reduce<LinePiece[][]>((acc, line) => {
+  const groups = lines.reduce<LineWords[][]>((acc, line) => {
     const last = acc[acc.length - 1];
     if (!last || last[0].paragraphIndex !== line.paragraphIndex) {
       acc.push([line]);
@@ -149,7 +274,7 @@ export function ScrollLineReveal({
   }, []);
 
   return (
-    <div ref={rootRef} className={cn("relative", className)}>
+    <div ref={rootRef} className={cn("relative text-foreground", className)}>
       <div
         ref={measureRef}
         aria-hidden
@@ -162,7 +287,7 @@ export function ScrollLineReveal({
         ))}
       </div>
 
-      {lines.length === 0 ? (
+      {lines.length === 0 || totalWords === 0 ? (
         <div className="space-y-6 sm:space-y-8">{children}</div>
       ) : (
         <div aria-hidden>
@@ -172,14 +297,19 @@ export function ScrollLineReveal({
               className="mb-6 last:mb-0 sm:mb-8 sm:last:mb-0"
             >
               {group.map((line) => (
-                <ScrubLine
-                  key={`${line.paragraphIndex}-${line.index}`}
-                  segments={line.segments}
-                  index={line.index}
-                  total={lines.length}
-                  progress={scrollYProgress}
-                  locked={locked}
-                />
+                <div key={line.lineKey} className="block">
+                  {line.words.map((word, i) => (
+                    <FadeWord
+                      key={`${line.lineKey}-${i}`}
+                      text={word.text}
+                      className={word.className}
+                      wordIndex={word.wordIndex}
+                      totalWords={totalWords}
+                      progress={scrub}
+                      locked={locked}
+                    />
+                  ))}
+                </div>
               ))}
             </div>
           ))}

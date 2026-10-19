@@ -19,10 +19,14 @@ export function ClickSparkProvider({ children }: { children: ReactNode }) {
   return (
     <ClickSpark
       sparkColor={sparkColor}
-      sparkSize={12}
-      sparkRadius={18}
-      sparkCount={10}
-      duration={450}
+      sparkSize={14}
+      sparkRadius={20}
+      sparkCount={8}
+      glow={0.5}
+      duration={400}
+      easing="ease-out"
+      shape="streak"
+      layer="front"
       className="min-h-[100dvh] w-full"
     >
       {children}

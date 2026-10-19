@@ -1,7 +1,5 @@
 export const DATA = {
   name: "Jason Leroy",
-  url: "https://jason-leroy.com",
-  location: "Paris, France",
 
   contact: {
     email: "jasonleroy.dev@gmail.com",
@@ -21,17 +19,23 @@ export const DATA = {
     {
       id: "pingora" as const,
       title: "Pingora",
+      year: 2025,
       href: "https://github.com/Nojaas/pingora",
+      images: ["/pingora1.png", "/pingora2.png"],
     },
     {
       id: "krono" as const,
       title: "Krono",
+      year: 2025,
       href: "https://krono-extension.vercel.app/",
+      images: ["/krono1.webp", "/krono2.png"],
     },
     {
       id: "kanboard" as const,
       title: "Kanboard",
+      year: 2024,
       href: "https://kanboardapp.vercel.app",
+      images: ["/kanboard1.png", "/kanboard2.png"],
     },
   ],
 };

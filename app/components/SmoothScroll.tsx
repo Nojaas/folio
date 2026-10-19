@@ -4,9 +4,6 @@ import "lenis/dist/lenis.css";
 import { ReactLenis, useLenis } from "lenis/react";
 import { useEffect, type ReactNode } from "react";
 
-/** Offset for fixed glass nav (~56px pill + top padding). */
-const ANCHOR_OFFSET = -88;
-
 function ScrollToTopOnLoad() {
   const lenis = useLenis();
 
@@ -26,8 +23,9 @@ function ScrollToTopOnLoad() {
  * Lenis everywhere.
  * - Desktop: smoothWheel
  * - Mobile: syncTouch false → native touch momentum (best perf per Lenis docs);
- *   Lenis still runs and syncs scroll for motion/anchors. Never call stop()
+ *   Lenis still runs and syncs scroll. Never call stop()
  *   (`.lenis-stopped { overflow: clip }` locks scrolling).
+ * - Anchors disabled: DynamicIsland handles section scrolls (centered).
  */
 export function SmoothScroll({ children }: { children: ReactNode }) {
   return (
@@ -42,9 +40,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
         touchMultiplier: 1,
         overscroll: false,
         smoothWheel: true,
-        anchors: {
-          offset: ANCHOR_OFFSET,
-        },
+        anchors: false,
       }}
     >
       <ScrollToTopOnLoad />

@@ -28,6 +28,9 @@ export function localePath(locale: Locale, href = "/") {
 export type Dictionary = {
   nav: {
     available: string;
+    about: string;
+    projects: string;
+    contact: string;
     switchToEn: string;
     switchToFr: string;
   };
@@ -36,6 +39,8 @@ export type Dictionary = {
     p1: string;
     p2: string;
     p3: string;
+    /** Circular badge around the CV download */
+    cvRing: string;
   };
   projects: {
     titleLine1: string;
@@ -50,11 +55,9 @@ export type Dictionary = {
     contact: string;
     linkedin: string;
     cv: string;
-    cvToast: string;
   };
   footer: {
-    role: string;
-    rights: string;
+    orbitRing: string;
   };
   notFound: {
     title: string;
@@ -62,6 +65,13 @@ export type Dictionary = {
   };
   stack: {
     label: string;
+    title: string;
+    categoriesLabel: string;
+    categories: {
+      frontend: { label: string; description: string };
+      backend: { label: string; description: string };
+      product: { label: string; labelShort: string; description: string };
+    };
   };
 };
 
@@ -69,6 +79,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
   fr: {
     nav: {
       available: "Disponible",
+      about: "À propos",
+      projects: "Projets",
+      contact: "Contact",
       switchToEn: "Passer en anglais",
       switchToFr: "Passer en français",
     },
@@ -77,6 +90,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       p1: "Je développe aujourd'hui principalement en React et TypeScript, avec un vrai back NodeJS. J'ai travaillé sur des back-offices, des SaaS et des applications métier, avec une approche full-stack qui va de l'interface jusqu'à la mise en production.",
       p2: "Je ne me contente pas d'exécuter une demande. J'aime comprendre le besoin derrière une fonctionnalité pour faire des choix techniques et UI qui ont du sens.",
       p3: "Disponible en freelance, ou à plein temps en hybride à Paris, là où je peux voir concrètement l'impact de ce que je construis.",
+      cvRing: "Voir le CV (PDF) * ",
     },
     projects: {
       titleLine1: "Sélection",
@@ -94,11 +108,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
       contact: "Contact",
       linkedin: "LinkedIn",
       cv: "CV (PDF)",
-      cvToast: "CV téléchargé avec succès !",
     },
     footer: {
-      role: "Fullstack developer",
-      rights: "Tous droits réservés.",
+      orbitRing: "© {year} Jason Leroy. Tous droits réservés. ",
     },
     notFound: {
       title: "Page introuvable.",
@@ -106,11 +118,33 @@ export const dictionaries: Record<Locale, Dictionary> = {
     },
     stack: {
       label: "Stack technique",
+      title: "Stack.",
+      categoriesLabel: "Catégories",
+      categories: {
+        frontend: {
+          label: "Frontend",
+          description:
+            "Interfaces, UX et les détails qui les font sentir juste.",
+        },
+        backend: {
+          label: "Backend",
+          description: "APIs, data et les systèmes derrière le produit.",
+        },
+        product: {
+          label: "Infrastructure & Delivery",
+          labelShort: "Infrastructure",
+          description:
+            "De la première idée à la production, avec un focus sur la fiabilité.",
+        },
+      },
     },
   },
   en: {
     nav: {
       available: "Available",
+      about: "About",
+      projects: "Projects",
+      contact: "Contact",
       switchToEn: "Switch to English",
       switchToFr: "Switch to French",
     },
@@ -119,6 +153,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       p1: "These days I mainly work with React and TypeScript, backed by a real Node.js back end. I've worked on back offices, SaaS products and business applications, with a full-stack approach that runs from the interface all the way to production.",
       p2: "I don't just carry out requests. I like to understand the need behind a feature so I can make technical and UI choices that make sense.",
       p3: "Available for freelance work, or full time in a hybrid setup in Paris, where I can see the real impact of what I build.",
+      cvRing: "RESUME (PDF) * ",
     },
     projects: {
       titleLine1: "Selected",
@@ -136,11 +171,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
       contact: "Contact",
       linkedin: "LinkedIn",
       cv: "Resume (PDF)",
-      cvToast: "Resume downloaded successfully!",
     },
     footer: {
-      role: "Fullstack developer",
-      rights: "All rights reserved.",
+      orbitRing: "© {year} Jason Leroy. All rights reserved. ",
     },
     notFound: {
       title: "Page not found.",
@@ -148,6 +181,25 @@ export const dictionaries: Record<Locale, Dictionary> = {
     },
     stack: {
       label: "Tech stack",
+      title: "Stack.",
+      categoriesLabel: "Categories",
+      categories: {
+        frontend: {
+          label: "Frontend",
+          description:
+            "Interfaces, UX and the details that make them feel right.",
+        },
+        backend: {
+          label: "Backend",
+          description: "APIs, data and the systems behind the product.",
+        },
+        product: {
+          label: "Infrastructure & Delivery",
+          labelShort: "Infrastructure",
+          description:
+            "From first idea to production, with a focus on reliability.",
+        },
+      },
     },
   },
 };
