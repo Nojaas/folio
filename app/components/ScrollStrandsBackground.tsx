@@ -1,5 +1,6 @@
 "use client";
 
+import { MOBILE_MAX } from "@/lib/constants/layout";
 import { cn } from "@/lib/utils";
 import {
   motion,
@@ -21,24 +22,79 @@ const ENERGY_CALM_DARK = 0.18;
 /** Light mode starts fully calm */
 const ENERGY_CALM_LIGHT = 0;
 const ENERGY_SIRI = 0.72;
+/** Fixed mid energy on mobile — no scroll spring (avoids reverse-scroll stutter) */
+const ENERGY_MOBILE_DARK = 0.32;
+const ENERGY_MOBILE_LIGHT = 0.08;
 
 /**
  * Fixed Strands behind the page:
- * centered → zoom on scroll, magnetic cursor pull.
- * energy: calm → siri with scroll; hover/click via Strands interactive + clickPulse.
+ * Desktop: scroll-linked zoom / energy / magnetic cursor.
+ * Mobile: static lighter WebGL (no scroll coupling).
  */
 export function ScrollStrandsBackground() {
   const reducedMotion = useReducedMotion();
-  const { resolvedTheme } = useTheme();
-  const { scrollYProgress } = useScroll();
-  const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
 
   useEffect(() => {
-    setMounted(true);
+    const mq = window.matchMedia(`(max-width: ${MOBILE_MAX}px)`);
+    const sync = () => setIsMobile(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
   }, []);
 
-  const isLight = mounted && resolvedTheme === "light";
+  if (reducedMotion) return null;
+  // Wait until breakpoint is known — avoids mounting desktop WebGL on phones
+  if (isMobile === null) return null;
+  if (isMobile) return <ScrollStrandsMobile />;
+  return <ScrollStrandsDesktop />;
+}
+
+function useThemeLight() {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  return mounted && resolvedTheme === "light";
+}
+
+function ScrollStrandsMobile() {
+  const isLight = useThemeLight();
+
+  return (
+    <motion.div
+      aria-hidden
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 1.2 }}
+    >
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div
+          className={cn(
+            "h-[min(100vw,100vh)] w-[min(100vw,100vh)] scale-[0.48] opacity-85",
+          )}
+        >
+          <Strands
+            className="h-full w-full"
+            energy={isLight ? ENERGY_MOBILE_LIGHT : ENERGY_MOBILE_DARK}
+            lightMode={isLight}
+            glass={false}
+            interactive={false}
+            clickPulse={false}
+            globalPointer={false}
+            maxDevicePixelRatio={1}
+            intro
+          />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function ScrollStrandsDesktop() {
+  const isLight = useThemeLight();
   const energyCalm = isLight ? ENERGY_CALM_LIGHT : ENERGY_CALM_DARK;
+  const { scrollYProgress } = useScroll();
 
   const scale = useTransform(scrollYProgress, [0, 1], [0.36, 0.88]);
   const scrollY = useTransform(scrollYProgress, [0, 1], ["-10vh", "0vh"]);
@@ -71,7 +127,6 @@ export function ScrollStrandsBackground() {
   const magnetY = useSpring(rawY, { stiffness: 90, damping: 18, mass: 0.4 });
 
   useEffect(() => {
-    if (reducedMotion) return;
     if (window.matchMedia("(pointer: coarse)").matches) return;
 
     const onMove = (e: MouseEvent) => {
@@ -93,11 +148,7 @@ export function ScrollStrandsBackground() {
       window.removeEventListener("mousemove", onMove);
       document.documentElement.removeEventListener("mouseleave", onLeave);
     };
-  }, [rawX, rawY, reducedMotion, strengthRef]);
-
-  if (reducedMotion) {
-    return null;
-  }
+  }, [rawX, rawY, strengthRef]);
 
   return (
     <motion.div
