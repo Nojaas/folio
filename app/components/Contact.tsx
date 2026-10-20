@@ -1,10 +1,10 @@
 "use client";
 
 import { DownFastLink } from "@/app/components/DownFastLink";
+import { ScrollItemsReveal } from "@/app/components/ScrollItemsReveal";
 import { ContentRail, Section } from "@/app/components/Section";
 import { DATA } from "@/data/resume";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import { ScrollItemsReveal } from "@/app/components/ScrollItemsReveal";
 
 export const Contact = () => {
   const { t } = useLocale();
@@ -32,7 +32,7 @@ export const Contact = () => {
       className="flex min-h-[100dvh] w-full flex-col justify-center py-24 sm:py-32"
     >
       <ContentRail>
-        <ScrollItemsReveal lockWhenComplete className="flex flex-col">
+        <ScrollItemsReveal className="flex flex-col">
           {actions.map((action) => (
             <DownFastLink
               key={action.label}

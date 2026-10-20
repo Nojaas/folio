@@ -5,7 +5,6 @@ import { AboutCvBadge } from "@/app/components/AboutCvBadge";
 import { Contact } from "@/app/components/Contact";
 import { Footer } from "@/app/components/Footer";
 import { HeroMetallicTitle } from "@/app/components/HeroMetallicTitle";
-import { ProcessMarquee } from "@/app/components/ProcessMarquee";
 import { ProjectsFlowingMenu } from "@/app/components/ProjectsFlowingMenu";
 import { ScrollProgress } from "@/app/components/ScrollProgress";
 import { ScrollStrandsBackground } from "@/app/components/ScrollStrandsBackground";
@@ -91,8 +90,6 @@ export default function HomePage() {
             />
           </ContentRail>
         </Section>
-
-        <ProcessMarquee />
 
         <StackSection />
 

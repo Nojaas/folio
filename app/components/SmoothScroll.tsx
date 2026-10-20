@@ -33,8 +33,8 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       root
       options={{
         autoRaf: true,
-        lerp: 0.1,
-        wheelMultiplier: 1,
+        lerp: 0.12,
+        wheelMultiplier: 0.8,
         // Native touch — no smoothed touch, avoids iOS jank / edge fights
         syncTouch: false,
         touchMultiplier: 1,

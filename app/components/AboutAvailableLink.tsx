@@ -99,7 +99,7 @@ export function AboutAvailableLink({
     if (Math.abs(current - target) < 4) return;
 
     if (lenis) {
-      lenis.scrollTo(target, { duration: 1.15, offset: 0 });
+      lenis.scrollTo(target, { duration: 1.5, offset: 0 });
       return;
     }
     window.scrollTo({ top: target, behavior: "smooth" });
@@ -112,7 +112,7 @@ export function AboutAvailableLink({
       aria-label={label}
       className={cn(
         // border-b — text-decoration is clipped by ShinyText’s background-clip
-        "inline whitespace-nowrap align-baseline border-b-[0.5px] border-foreground pb-px",
+        "inline whitespace-nowrap align-baseline",
         className,
       )}
     >
@@ -126,7 +126,8 @@ export function AboutAvailableLink({
           shineWidth={SHINE.shineWidth}
           softness={SHINE.softness}
           speed={SHINE.speed}
-          className="align-baseline font-[inherit] leading-[inherit]"
+          followPointer
+          className="align-baseline font-[inherit] font-bold leading-[inherit]"
         />
       ) : (
         <span>{label}</span>

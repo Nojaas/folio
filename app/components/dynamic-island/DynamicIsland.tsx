@@ -8,9 +8,9 @@ import {
   spring,
   type SectionId,
 } from "@/app/components/dynamic-island/constants";
+import { emitSectionArrived } from "@/app/components/dynamic-island/events";
 import { IslandShell } from "@/app/components/dynamic-island/IslandShell";
 import { NavContent } from "@/app/components/dynamic-island/NavContent";
-import { emitSectionArrived } from "@/app/components/dynamic-island/events";
 import { getSectionScrollTarget } from "@/app/components/dynamic-island/scroll";
 import { useIslandPosition } from "@/app/components/dynamic-island/useIslandPosition";
 import { useSectionSpy } from "@/app/components/dynamic-island/useSectionSpy";
@@ -87,7 +87,7 @@ export function DynamicIsland() {
       lock();
       if (lenis) {
         lenis.scrollTo(target, {
-          duration: 1.15,
+          duration: 1.3,
           offset: 0,
           onComplete: unlock,
         });
