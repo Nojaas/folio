@@ -22,14 +22,14 @@ const ENERGY_CALM_DARK = 0.18;
 /** Light mode starts fully calm */
 const ENERGY_CALM_LIGHT = 0;
 const ENERGY_SIRI = 0.72;
-/** Fixed mid energy on mobile — no scroll spring (avoids reverse-scroll stutter) */
+/** Fixed mid energy on mobile — no scroll→energy spring */
 const ENERGY_MOBILE_DARK = 0.32;
 const ENERGY_MOBILE_LIGHT = 0.08;
 
 /**
  * Fixed Strands behind the page:
  * Desktop: scroll-linked zoom / energy / magnetic cursor.
- * Mobile: static lighter WebGL (no scroll coupling).
+ * Mobile: glass + scroll scale; fixed energy; no interaction / click pulse.
  */
 export function ScrollStrandsBackground() {
   const reducedMotion = useReducedMotion();
@@ -59,6 +59,9 @@ function useThemeLight() {
 
 function ScrollStrandsMobile() {
   const isLight = useThemeLight();
+  const { scrollYProgress } = useScroll();
+  // Scale only — no energy spring / setState on scroll
+  const scale = useTransform(scrollYProgress, [0, 1], [0.36, 0.88]);
 
   return (
     <motion.div
@@ -69,23 +72,24 @@ function ScrollStrandsMobile() {
       transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 1.2 }}
     >
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <div
+        <motion.div
           className={cn(
-            "h-[min(100vw,100vh)] w-[min(100vw,100vh)] scale-[0.48] opacity-85",
+            "h-[min(100vw,100vh)] w-[min(100vw,100vh)] will-change-transform opacity-85",
           )}
+          style={{ scale }}
         >
           <Strands
             className="h-full w-full"
             energy={isLight ? ENERGY_MOBILE_LIGHT : ENERGY_MOBILE_DARK}
             lightMode={isLight}
-            glass={false}
+            glass
             interactive={false}
             clickPulse={false}
             globalPointer={false}
             maxDevicePixelRatio={1}
             intro
           />
-        </div>
+        </motion.div>
       </div>
     </motion.div>
   );
