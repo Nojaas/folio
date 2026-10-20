@@ -16,7 +16,7 @@ export default function NotFound() {
   const t = dictionaries[locale];
 
   return (
-    <main className="flex min-h-[100dvh] flex-col items-center justify-center px-6 sm:px-8">
+    <main className="flex min-h-[100svh] flex-col items-center justify-center px-6 sm:px-8">
       <div className="flex flex-col items-center gap-6 text-center">
         <p className="text-sm text-muted-foreground">404</p>
         <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">

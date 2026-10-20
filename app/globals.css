@@ -207,7 +207,8 @@
 html {
   /* Sole scrollport for the page */
   scroll-behavior: auto;
-  overflow-x: clip;
+  /* hidden > clip on Safari iOS — clip + composited layers can jitter while scrolling */
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior-y: none;
   scrollbar-width: none;

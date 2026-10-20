@@ -30,10 +30,11 @@ export default function HomePage() {
         <SiteNav />
       </div>
       <ScrollProgress />
-      <main className="relative z-10 flex min-h-[100dvh] w-full max-w-[100vw] flex-col overflow-x-clip pb-[max(5.5rem,env(safe-area-inset-bottom))] md:pb-0">
+      {/* svh not dvh: Safari resizes dvh when the URL bar toggles on scroll reverse → jank */}
+      <main className="relative z-10 flex min-h-[100svh] w-full max-w-[100vw] flex-col overflow-x-hidden pb-[max(5.5rem,env(safe-area-inset-bottom))] md:pb-0">
         <section
           id="home"
-          className="relative flex h-[100dvh] flex-col justify-end px-2.5 pb-0"
+          className="relative flex h-[100svh] flex-col justify-end px-2.5 pb-0"
         >
           <div className="w-full">
             <HeroMetallicTitle text={`${DATA.name}.`} />
@@ -42,7 +43,7 @@ export default function HomePage() {
 
         <section
           id="about"
-          className="relative flex min-h-[100dvh] flex-col justify-center space-y-12 py-24 sm:py-32"
+          className="relative flex min-h-[100svh] flex-col justify-center space-y-12 py-24 sm:py-32"
         >
           <div className="flex items-center justify-between gap-6 px-2.5">
             <SectionTitleReveal
@@ -70,7 +71,7 @@ export default function HomePage() {
 
         <Section
           id="projects"
-          className="flex min-h-[100dvh] w-full flex-col justify-center space-y-12 py-24 sm:py-32"
+          className="flex min-h-[100svh] w-full flex-col justify-center space-y-12 py-24 sm:py-32"
         >
           <SectionTitleReveal
             key={`projects-title-${locale}`}

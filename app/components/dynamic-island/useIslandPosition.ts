@@ -1,6 +1,6 @@
 "use client";
 
-import { ISLAND_SLOT_ID } from "@/lib/constants/layout";
+import { ISLAND_SLOT_ID, MOBILE_MAX } from "@/lib/constants/layout";
 import { useLayoutEffect, useState } from "react";
 
 export type IslandPosition = {
@@ -49,18 +49,35 @@ export function useIslandPosition(
 
   useLayoutEffect(() => {
     const sync = () => setPos(measure(mode));
-
     sync();
-    window.addEventListener("resize", sync);
 
-    const ro = new ResizeObserver(sync);
+    // Safari toggles the URL bar on scroll reverse → resize spam + spring jank.
+    // Debounce on small viewports; desktop stays immediate.
+    let resizeTimer: number | null = null;
+    const onResize = () => {
+      const mobile = window.matchMedia(`(max-width: ${MOBILE_MAX}px)`).matches;
+      if (!mobile) {
+        sync();
+        return;
+      }
+      if (resizeTimer != null) window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        resizeTimer = null;
+        sync();
+      }, 120);
+    };
+
+    window.addEventListener("resize", onResize);
+
+    const ro = new ResizeObserver(onResize);
     const slot = document.getElementById(ISLAND_SLOT_ID);
     if (slot) ro.observe(slot);
     const header = document.querySelector("header");
     if (header) ro.observe(header);
 
     return () => {
-      window.removeEventListener("resize", sync);
+      window.removeEventListener("resize", onResize);
+      if (resizeTimer != null) window.clearTimeout(resizeTimer);
       ro.disconnect();
     };
   }, [mode]);

@@ -74,7 +74,8 @@ function ScrollStrandsMobile() {
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <motion.div
           className={cn(
-            "h-[min(100vw,100vh)] w-[min(100vw,100vh)] will-change-transform opacity-85",
+            // No permanent will-change on Safari — hurts scroll compositing
+            "h-[min(100vw,100svh)] w-[min(100vw,100svh)] opacity-85",
           )}
           style={{ scale }}
         >

@@ -29,7 +29,7 @@ export const Contact = () => {
   return (
     <Section
       id="contact"
-      className="flex min-h-[100dvh] w-full flex-col justify-center py-24 sm:py-32"
+      className="flex min-h-[100svh] w-full flex-col justify-center py-24 sm:py-32"
     >
       <ContentRail>
         <ScrollItemsReveal className="flex flex-col">

@@ -27,7 +27,7 @@ export function ClickSparkProvider({ children }: { children: ReactNode }) {
       easing="ease-out"
       shape="streak"
       layer="front"
-      className="min-h-[100dvh] w-full"
+      className="min-h-[100svh] w-full"
     >
       {children}
     </ClickSpark>
