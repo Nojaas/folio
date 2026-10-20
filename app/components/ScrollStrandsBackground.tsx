@@ -13,7 +13,7 @@ import {
 } from "motion/react";
 import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const Strands = dynamic(() => import("@/components/Strands"), { ssr: false });
 
@@ -57,11 +57,50 @@ function useThemeLight() {
   return mounted && resolvedTheme === "light";
 }
 
+const SCALE_MIN = 0.36;
+const SCALE_MAX = 0.88;
+
+/**
+ * Safari stutters when Framer `useScroll` drives a scaled WebGL layer every
+ * frame. Drive `transform: scale()` ourselves: rAF-coalesced + quantized.
+ */
 function ScrollStrandsMobile() {
   const isLight = useThemeLight();
-  const { scrollYProgress } = useScroll();
-  // Scale only — no energy spring / setState on scroll
-  const scale = useTransform(scrollYProgress, [0, 1], [0.36, 0.88]);
+  const layerRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef(0);
+  const lastScaleRef = useRef(-1);
+
+  useEffect(() => {
+    const el = layerRef.current;
+    if (!el) return;
+
+    const apply = () => {
+      rafRef.current = 0;
+      const max = Math.max(
+        1,
+        document.documentElement.scrollHeight - window.innerHeight,
+      );
+      const p = Math.min(1, Math.max(0, window.scrollY / max));
+      const raw = SCALE_MIN + p * (SCALE_MAX - SCALE_MIN);
+      // ~0.01 steps — keeps the zoom feel, fewer Safari compositor commits
+      const scale = Math.round(raw * 100) / 100;
+      if (scale === lastScaleRef.current) return;
+      lastScaleRef.current = scale;
+      el.style.transform = `translate3d(0,0,0) scale(${scale})`;
+    };
+
+    const onScroll = () => {
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(apply);
+    };
+
+    apply();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
   return (
     <motion.div
@@ -72,12 +111,12 @@ function ScrollStrandsMobile() {
       transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 1.2 }}
     >
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <motion.div
+        <div
+          ref={layerRef}
           className={cn(
-            // No permanent will-change on Safari — hurts scroll compositing
             "h-[min(100vw,100svh)] w-[min(100vw,100svh)] opacity-85",
           )}
-          style={{ scale }}
+          style={{ transform: `translate3d(0,0,0) scale(${SCALE_MIN})` }}
         >
           <Strands
             className="h-full w-full"
@@ -88,9 +127,11 @@ function ScrollStrandsMobile() {
             clickPulse={false}
             globalPointer={false}
             maxDevicePixelRatio={1}
+            // Slightly slower shader clock while glass + scale run on Safari
+            speed={0.7}
             intro
           />
-        </motion.div>
+        </div>
       </div>
     </motion.div>
   );
