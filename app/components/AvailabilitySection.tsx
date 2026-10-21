@@ -1,6 +1,7 @@
 "use client";
 
 import { AvailabilityDot } from "@/app/components/AvailabilityDot";
+import { LineContentReveal } from "@/app/components/LineContentReveal";
 import { ContentRail, Section } from "@/app/components/Section";
 import { SectionTitleReveal } from "@/app/components/SectionTitleReveal";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
@@ -46,23 +47,28 @@ export function AvailabilitySection() {
       </SectionTitleReveal>
 
       <ContentRail>
-        <div className="relative pl-6 sm:pl-8">
-          <span
-            aria-hidden
-            className="absolute top-1 bottom-1 left-0 w-px bg-foreground/20"
-          />
-          <div className="space-y-11 sm:space-y-14">
-            {rows.map((row) => (
-              <div key={row.key} className="space-y-2">
-                <p className="font-display text-3xl font-bold tracking-tighter text-foreground sm:text-4xl">
-                  {row.primary}
-                </p>
-                <p className="text-sm text-muted-foreground sm:text-[15px]">
-                  {row.detail}
-                </p>
-              </div>
-            ))}
-          </div>
+        <div className="flex flex-col">
+          {rows.map((row, index) => {
+            const isLast = index === rows.length - 1;
+
+            return (
+              <LineContentReveal
+                key={`${locale}-${row.key}`}
+                index={index}
+                leadingLine={index > 0}
+                trailingLine={isLast}
+              >
+                <div className="space-y-2 py-5 sm:py-6">
+                  <p className="font-display text-3xl font-bold tracking-tighter text-foreground sm:text-4xl">
+                    {row.primary}
+                  </p>
+                  <p className="text-sm text-muted-foreground sm:text-[15px]">
+                    {row.detail}
+                  </p>
+                </div>
+              </LineContentReveal>
+            );
+          })}
         </div>
       </ContentRail>
     </Section>

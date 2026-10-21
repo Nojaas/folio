@@ -13,9 +13,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 type Props = {
   className?: string;
+  /** `island` — muted white for the Dynamic Island shell */
+  tone?: "page" | "island";
 };
 
 const iconProps = { className: "size-4.5", strokeWidth: 1.75 } as const;
+const islandIconProps = { className: "size-4", strokeWidth: 1.75 } as const;
 
 /** Snappier than hover — click shouldn't feel like waiting on the spring */
 const clickSpring = {
@@ -25,7 +28,10 @@ const clickSpring = {
   mass: 0.7,
 };
 
-export const AnimatedThemeToggler = ({ className }: Props) => {
+export const AnimatedThemeToggler = ({
+  className,
+  tone = "page",
+}: Props) => {
   const { resolvedTheme, setTheme } = useTheme();
   const { locale } = useLocale();
   const [mounted, setMounted] = useState(false);
@@ -37,6 +43,7 @@ export const AnimatedThemeToggler = ({ className }: Props) => {
 
   const animatingRef = useRef(false);
   const targetDarkRef = useRef(true);
+  const icons = tone === "island" ? islandIconProps : iconProps;
 
   useEffect(() => {
     setMounted(true);
@@ -76,7 +83,10 @@ export const AnimatedThemeToggler = ({ className }: Props) => {
       animate={slid ? "hover" : "rest"}
       aria-label={ariaLabel}
       className={cn(
-        "relative z-20 overflow-hidden text-foreground focus-visible:outline-none",
+        "relative z-20 overflow-hidden focus-visible:outline-none",
+        tone === "island"
+          ? "rounded-full px-2.5 py-2.5 text-white/45 transition-colors hover:text-white/80 sm:px-2 sm:py-1.5"
+          : "text-foreground",
         className,
       )}
       onHoverStart={() => {
@@ -111,7 +121,8 @@ export const AnimatedThemeToggler = ({ className }: Props) => {
       }}
     >
       <DownFastIcon
-        next={visualDark ? <Sun {...iconProps} /> : <Moon {...iconProps} />}
+        className={tone === "island" ? "h-4 w-4" : undefined}
+        next={visualDark ? <Sun {...icons} /> : <Moon {...icons} />}
         transition={
           snap ? { duration: 0 } : animating ? clickSpring : downFastSpring
         }
@@ -121,7 +132,7 @@ export const AnimatedThemeToggler = ({ className }: Props) => {
           }
         }}
       >
-        {visualDark ? <Moon {...iconProps} /> : <Sun {...iconProps} />}
+        {visualDark ? <Moon {...icons} /> : <Sun {...icons} />}
       </DownFastIcon>
     </DownFastButton>
   );

@@ -29,8 +29,9 @@ export function SectionTitleReveal({
   return (
     <div ref={ref} className={cn("overflow-hidden font-display", className)}>
       <motion.div
-        initial={{ y: "20%", opacity: 0 }}
-        animate={inView ? { y: "0%", opacity: 1 } : { y: "35%", opacity: 0 }}
+        // em — % y inside overflow:hidden is flaky on Mobile Safari
+        initial={{ y: "1.1em", opacity: 0 }}
+        animate={inView ? { y: "0em", opacity: 1 } : { y: "1.35em", opacity: 0 }}
         transition={titleReveal}
       >
         {children}

@@ -4,7 +4,6 @@ import { AvailableContent } from "@/app/components/dynamic-island/AvailableConte
 import {
   fade,
   none,
-  SCROLL_THRESHOLD,
   spring,
   type SectionId,
 } from "@/app/components/dynamic-island/constants";
@@ -13,6 +12,7 @@ import { IslandShell } from "@/app/components/dynamic-island/IslandShell";
 import { NavContent } from "@/app/components/dynamic-island/NavContent";
 import { getSectionScrollTarget } from "@/app/components/dynamic-island/scroll";
 import { useIslandPosition } from "@/app/components/dynamic-island/useIslandPosition";
+import { useNavMode } from "@/app/components/dynamic-island/useNavMode";
 import { useSectionSpy } from "@/app/components/dynamic-island/useSectionSpy";
 import { useShellSize } from "@/app/components/dynamic-island/useShellSize";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -23,27 +23,13 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useState, type MouseEvent } from "react";
 
 export function DynamicIsland() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const reduceMotion = useReducedMotion();
   const isMobile = useIsMobile();
   const { active, setActive, lock, unlock } = useSectionSpy();
-  const [navMode, setNavMode] = useState(false);
+  const navMode = useNavMode();
   const [ready, setReady] = useState(false);
-
-  const lenis = useLenis((instance) => {
-    const next = instance.scroll > SCROLL_THRESHOLD;
-    setNavMode((prev) => (prev === next ? prev : next));
-  });
-
-  useEffect(() => {
-    const onScroll = () => {
-      const next = window.scrollY > SCROLL_THRESHOLD;
-      setNavMode((prev) => (prev === next ? prev : next));
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const lenis = useLenis();
 
   useEffect(() => {
     const id = window.setTimeout(() => setReady(true), 220);
@@ -59,6 +45,7 @@ export function DynamicIsland() {
       navMode,
       isMobile,
       dockBottom,
+      locale,
       t.nav.projects,
       t.nav.stack,
       t.nav.contact,

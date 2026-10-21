@@ -1,5 +1,6 @@
 'use client';
 
+import { isSafariTouch } from '@/lib/browser';
 import React, {
   Children,
   useEffect,
@@ -43,6 +44,11 @@ interface ScrollRevealProps {
   textClassName?: string;
   rotationEnd?: string;
   wordAnimationEnd?: string;
+  /**
+   * When true, only on Safari touch (excludes Chrome/Firefox iOS) remap scrub → enter.
+   * Chrome iOS keeps scrub. Opt-in so other reveals stay untouched.
+   */
+  safariEnterFallback?: boolean;
 }
 
 interface RevealLook {
@@ -91,7 +97,10 @@ const paintPiece = (piece: HTMLElement, t: number, look: RevealLook) => {
   const settle = clamp01(reveal);
   const lift = look.offset * (1 - settle);
   piece.style.opacity = t >= 1 ? '' : (look.baseOpacity + (1 - look.baseOpacity) * fadeIn).toFixed(3);
-  piece.style.transform = [lift ? `translateY(${lift.toFixed(2)}px)` : '', motion].filter(Boolean).join(' ');
+  // translateZ(0) while animating — Safari skips opacity paints on plain inline-blocks mid-scroll.
+  piece.style.transform = [lift ? `translateY(${lift.toFixed(2)}px)` : '', motion, t < 1 ? 'translateZ(0)' : '']
+    .filter(Boolean)
+    .join(' ');
   piece.style.filter = look.blur && settle < 1 ? `blur(${(look.blur * (1 - settle)).toFixed(2)}px)` : '';
   if (look.highlightColor) {
     const glow = glowAt(t);
@@ -118,7 +127,8 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
   containerClassName = '',
   textClassName = '',
   rotationEnd = 'bottom bottom',
-  wordAnimationEnd = 'bottom bottom'
+  wordAnimationEnd = 'bottom bottom',
+  safariEnterFallback = false
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLSpanElement>(null);
@@ -176,9 +186,13 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
     const wrappers = Array.from(el.querySelectorAll<HTMLElement>('[data-word]'));
     const pieces = wrappers.length ? Array.from(el.querySelectorAll<HTMLElement>('[data-piece]')) : [textEl];
     const viewportHeight = () => (scroller instanceof HTMLElement ? scroller.clientHeight : window.innerHeight);
+    // True Safari only (CriOS / FxiOS / Edg excluded) — Chrome iOS keeps scrub.
+    const safariEnter = safariEnterFallback && mode === 'scrub' && isSafariTouch();
+    const activeMode: RevealMode = safariEnter ? 'enter' : mode;
     const scrub = smoothing > 0 ? smoothing : true;
-    const span = mode === 'enter' ? Math.max(0.05, duration) : SCRUB_SPAN;
-    const gap = Math.max(0, stagger);
+    // Compress cascade when we remap scrub→enter (stagger×wordCount would feel endless).
+    const span = activeMode === 'enter' ? Math.max(0.05, safariEnter ? Math.min(duration, 0.35) : duration) : SCRUB_SPAN;
+    const gap = Math.max(0, safariEnter ? Math.min(stagger, 0.012) : stagger);
     const look: RevealLook = {
       effect,
       masked: effect === 'rise' && wrappers.length > 0,
@@ -231,11 +245,13 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
       if (look.masked) {
         wrappers.forEach(wrapper => {
           wrapper.style.clipPath = RISE_MASK;
+          // Safari needs the webkit prefix for clip-path on inline wrappers.
+          wrapper.style.setProperty('-webkit-clip-path', RISE_MASK);
         });
       }
       render();
 
-      if (mode === 'enter') {
+      if (activeMode === 'enter') {
         let played = false;
         const play = () => {
           if (played) return;
@@ -318,6 +334,7 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
         });
         wrappers.forEach(wrapper => {
           wrapper.style.clipPath = '';
+          wrapper.style.removeProperty('-webkit-clip-path');
         });
       };
     });
@@ -340,7 +357,8 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
     stagger,
     smoothing,
     rotationEnd,
-    wordAnimationEnd
+    wordAnimationEnd,
+    safariEnterFallback
   ]);
 
   return (

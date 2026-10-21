@@ -15,8 +15,8 @@ export function Section({ className, children, ...rest }: SectionProps) {
 
 /**
  * Section body rail.
- * Mobile: left-aligned.
- * Desktop: content starts at the page center and flows right.
+ * Mobile: left-aligned with page padding.
+ * Desktop: starts at page mid, fills to the right page padding (empty left).
  */
 export function ContentRail({
   children,
@@ -27,7 +27,7 @@ export function ContentRail({
 }) {
   return (
     <div className={cn("w-full px-2.5 md:px-0", className)}>
-      <div className="w-full max-w-2xl md:ml-[50%] md:max-w-[min(42rem,calc(50%-0.625rem))] md:pr-2.5">
+      <div className="w-full max-w-2xl md:ml-[50%] md:max-w-[calc(50%-0.625rem)] md:pr-2.5">
         {children}
       </div>
     </div>

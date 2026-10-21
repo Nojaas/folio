@@ -127,7 +127,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       status: {
         label: "Statut",
         badge: "Disponible",
-        detail: "Freelance & opportunités CDI · Démarrage immédiat",
+        detail: "Freelance & opportunités CDI · Ouvert aux échanges",
       },
       location: {
         label: "Modalités",
@@ -210,7 +210,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       status: {
         label: "Status",
         badge: "Available",
-        detail: "Freelance & full-time opportunities · Immediate start",
+        detail: "Freelance & full-time opportunities · Open to opportunities",
       },
       location: {
         label: "Setup",

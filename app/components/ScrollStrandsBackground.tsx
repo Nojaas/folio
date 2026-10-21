@@ -1,5 +1,6 @@
 "use client";
 
+import { isSafariBrowser } from "@/lib/browser";
 import { MOBILE_MAX } from "@/lib/constants/layout";
 import { cn } from "@/lib/utils";
 import {
@@ -27,13 +28,6 @@ const ENERGY_MOBILE_DARK = 0.32;
 const ENERGY_MOBILE_LIGHT = 0.08;
 /** Static scale when Safari disables scroll-zoom (avoids compositor stutter) */
 const SCALE_MOBILE_STATIC = 0.48;
-
-function isSafariBrowser() {
-  if (typeof navigator === "undefined") return false;
-  const ua = navigator.userAgent;
-  // Chrome/Firefox/Edge on iOS include "Safari" in UA — exclude them
-  return /Safari/i.test(ua) && !/Chrome|CriOS|Chromium|Edg|FxiOS|OPiOS/i.test(ua);
-}
 
 /**
  * Fixed Strands behind the page:

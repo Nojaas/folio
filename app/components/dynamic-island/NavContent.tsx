@@ -1,7 +1,9 @@
 "use client";
 
 import type { SectionId } from "@/app/components/dynamic-island/constants";
+import { IslandToolbar } from "@/app/components/dynamic-island/IslandToolbar";
 import { PillTabs } from "@/app/components/PillTabs";
+import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 import type { MouseEvent } from "react";
 
@@ -39,7 +41,10 @@ export function NavContent({
           : { opacity: 0, position: "absolute", left: 0, top: 0 }
       }
       transition={transition}
-      className={wide ? "w-full" : "w-max"}
+      className={cn(
+        "flex items-center",
+        wide ? "w-full" : "w-max",
+      )}
     >
       <PillTabs
         items={items}
@@ -47,11 +52,13 @@ export function NavContent({
         wide={wide}
         variant="plain"
         aria-label="Sections"
+        className={wide ? "min-w-0 flex-1" : undefined}
         getHref={(id) => `#${id}`}
         onItemClick={(id, e) => {
           onNavClick(id)(e as MouseEvent<HTMLAnchorElement>);
         }}
       />
+      <IslandToolbar />
     </motion.div>
   );
 }

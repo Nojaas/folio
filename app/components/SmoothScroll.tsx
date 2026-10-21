@@ -8,6 +8,11 @@ import { useEffect, type ReactNode } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Safari iOS: URL-bar show/hide fires vertical resize → ST.refresh mid-scrub → stuck opacity.
+ScrollTrigger.config({ ignoreMobileResize: true });
+// Keep scrub in sync after background tabs / long frames (Lenis + GSAP).
+gsap.ticker.lagSmoothing(0);
+
 function ScrollToTopOnLoad() {
   const lenis = useLenis();
 
@@ -31,9 +36,15 @@ function LenisScrollTriggerSync() {
 
   useEffect(() => {
     const refresh = () => ScrollTrigger.refresh();
+    // Native scroll backup — Safari can stall Lenis/rAF during momentum touch scroll.
+    const onScroll = () => ScrollTrigger.update();
     refresh();
     window.addEventListener("resize", refresh);
-    return () => window.removeEventListener("resize", refresh);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("resize", refresh);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   return null;

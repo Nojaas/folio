@@ -27,6 +27,8 @@ const SPEEDS = {
 
 export type LineContentRevealSpeed = keyof typeof SPEEDS;
 
+const LINE = "h-px w-full origin-left bg-foreground/10";
+
 type LineContentRevealProps = {
   children: ReactNode;
   index: number;
@@ -65,13 +67,9 @@ export function LineContentReveal({
   if (reduceMotion) {
     return (
       <div className={className}>
-        {leadingLine ? (
-          <div aria-hidden className="h-px w-full bg-foreground/10" />
-        ) : null}
+        {leadingLine ? <div aria-hidden className={LINE} /> : null}
         <div className={contentClassName}>{children}</div>
-        {trailingLine ? (
-          <div aria-hidden className="h-px w-full bg-foreground/10" />
-        ) : null}
+        {trailingLine ? <div aria-hidden className={LINE} /> : null}
       </div>
     );
   }
@@ -81,7 +79,7 @@ export function LineContentReveal({
       {leadingLine ? (
         <motion.div
           aria-hidden
-          className="h-px w-full origin-left bg-foreground/10"
+          className={LINE}
           initial={{ scaleX: 0 }}
           animate={inView ? { scaleX: 1 } : { scaleX: 0 }}
           transition={{
@@ -106,7 +104,7 @@ export function LineContentReveal({
       {trailingLine ? (
         <motion.div
           aria-hidden
-          className="h-px w-full origin-left bg-foreground/10"
+          className={LINE}
           initial={{ scaleX: 0 }}
           animate={inView ? { scaleX: 1 } : { scaleX: 0 }}
           transition={{
