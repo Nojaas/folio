@@ -2,7 +2,11 @@
 
 import "lenis/dist/lenis.css";
 import { ReactLenis, useLenis } from "lenis/react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, type ReactNode } from "react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 function ScrollToTopOnLoad() {
   const lenis = useLenis();
@@ -15,6 +19,22 @@ function ScrollToTopOnLoad() {
     window.scrollTo(0, 0);
     lenis?.scrollTo(0, { immediate: true });
   }, [lenis]);
+
+  return null;
+}
+
+/** Keep GSAP ScrollTrigger in sync with Lenis (ScrollReveal scrub). */
+function LenisScrollTriggerSync() {
+  useLenis(() => {
+    ScrollTrigger.update();
+  });
+
+  useEffect(() => {
+    const refresh = () => ScrollTrigger.refresh();
+    refresh();
+    window.addEventListener("resize", refresh);
+    return () => window.removeEventListener("resize", refresh);
+  }, []);
 
   return null;
 }
@@ -44,6 +64,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       }}
     >
       <ScrollToTopOnLoad />
+      <LenisScrollTriggerSync />
       {children}
     </ReactLenis>
   );

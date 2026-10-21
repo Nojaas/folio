@@ -28,8 +28,8 @@ export function localePath(locale: Locale, href = "/") {
 export type Dictionary = {
   nav: {
     available: string;
-    about: string;
     projects: string;
+    stack: string;
     contact: string;
     switchToEn: string;
     switchToFr: string;
@@ -59,12 +59,19 @@ export type Dictionary = {
     linkedin: string;
     cv: string;
   };
+  availability: {
+    label: string;
+    title: string;
+    status: { label: string; badge: string; detail: string };
+    location: { label: string; primary: string; detail: string };
+    engagement: { label: string; primary: string; detail: string };
+  };
   footer: {
     orbitRing: string;
   };
   notFound: {
     title: string;
-    back: string;
+    home: string;
   };
   stack: {
     label: string;
@@ -82,8 +89,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
   fr: {
     nav: {
       available: "Disponible",
-      about: "À propos",
       projects: "Projets",
+      stack: "Stack",
       contact: "Contact",
       switchToEn: "Passer en anglais",
       switchToFr: "Passer en français",
@@ -114,12 +121,31 @@ export const dictionaries: Record<Locale, Dictionary> = {
       linkedin: "LinkedIn",
       cv: "CV (PDF)",
     },
+    availability: {
+      label: "Disponibilités",
+      title: "Disponibilités.",
+      status: {
+        label: "Statut",
+        badge: "Disponible",
+        detail: "Freelance & opportunités CDI · Démarrage immédiat",
+      },
+      location: {
+        label: "Modalités",
+        primary: "Full remote / Hybride",
+        detail: "Paris & Île-de-France",
+      },
+      engagement: {
+        label: "Engagement",
+        primary: "À partir de 380€/j",
+        detail: "Missions freelance · CDI frame",
+      },
+    },
     footer: {
       orbitRing: "© {year} Jason Leroy. Tous droits réservés. ",
     },
     notFound: {
       title: "Page introuvable.",
-      back: "Retour à l'accueil",
+      home: "Accueil",
     },
     stack: {
       label: "Stack technique",
@@ -128,8 +154,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       categories: {
         frontend: {
           label: "Frontend",
-          description:
-            "Interfaces, UX et les détails qui les font sentir juste.",
+          description: "Interfaces, UX et les détails qui font la différence.",
         },
         backend: {
           label: "Backend",
@@ -147,8 +172,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
   en: {
     nav: {
       available: "Available",
-      about: "About",
       projects: "Projects",
+      stack: "Stack",
       contact: "Contact",
       switchToEn: "Switch to English",
       switchToFr: "Switch to French",
@@ -179,12 +204,31 @@ export const dictionaries: Record<Locale, Dictionary> = {
       linkedin: "LinkedIn",
       cv: "Resume (PDF)",
     },
+    availability: {
+      label: "Availability",
+      title: "Availability.",
+      status: {
+        label: "Status",
+        badge: "Available",
+        detail: "Freelance & full-time opportunities · Immediate start",
+      },
+      location: {
+        label: "Setup",
+        primary: "Full remote / Hybrid",
+        detail: "Paris & Île-de-France",
+      },
+      engagement: {
+        label: "Engagement",
+        primary: "From €380/day",
+        detail: "Freelance missions · Permanent roles",
+      },
+    },
     footer: {
       orbitRing: "© {year} Jason Leroy. All rights reserved. ",
     },
     notFound: {
       title: "Page not found.",
-      back: "Back to home",
+      home: "Home",
     },
     stack: {
       label: "Tech stack",

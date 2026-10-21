@@ -6,7 +6,7 @@ import { ContentRail, Section } from "@/app/components/Section";
 import { DATA } from "@/data/resume";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
-export const Contact = () => {
+export function ContactSection() {
   const { t } = useLocale();
 
   const actions = [
@@ -40,11 +40,11 @@ export const Contact = () => {
               href={action.href}
               external={"external" in action && action.external}
               download={"download" in action && action.download}
-              className="text-4xl font-medium tracking-tight text-foreground sm:text-5xl"
+              className="font-display text-4xl font-medium tracking-tight text-foreground sm:text-5xl"
             />
           ))}
         </ScrollItemsReveal>
       </ContentRail>
     </Section>
   );
-};
+}

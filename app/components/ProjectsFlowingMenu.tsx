@@ -73,7 +73,7 @@ export function ProjectsFlowingMenu({
         bgColor="transparent"
         marqueeBgColor="var(--foreground)"
         marqueeTextColor="var(--background)"
-        borderColor="color-mix(in oklab, var(--foreground) 14%, transparent)"
+        borderColor="color-mix(in oklab, var(--foreground) 10%, transparent)"
         ariaLabel={ariaLabel}
         className="h-full w-full min-h-0"
       />

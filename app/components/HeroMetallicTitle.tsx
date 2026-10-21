@@ -15,13 +15,17 @@ export function HeroMetallicTitle({ text, className }: HeroMetallicTitleProps) {
   const { resolvedTheme } = useTheme();
   const reduceMotion = useReducedMotion();
   const [mounted, setMounted] = useState(false);
-  const [fontFamily, setFontFamily] = useState("Inter, system-ui, sans-serif");
+  const [fontFamily, setFontFamily] = useState("system-ui, sans-serif");
 
   useEffect(() => {
     setMounted(true);
-    // next/font hashed family lives on the document — canvas needs the resolved name
-    const resolved = getComputedStyle(document.documentElement).fontFamily;
-    if (resolved) setFontFamily(resolved);
+    // next/font family name lives on --font-display-face (Satoshi).
+    const display = getComputedStyle(document.documentElement)
+      .getPropertyValue("--font-display-face")
+      .trim();
+    // Prefer the primary face only — canvas font stacks are flaky with fallbacks.
+    const primary = display.split(",")[0]?.trim();
+    if (primary) setFontFamily(primary);
   }, []);
 
   // Match site default (dark) until hydrated
@@ -39,7 +43,7 @@ export function HeroMetallicTitle({ text, className }: HeroMetallicTitleProps) {
           key={fontFamily}
           text={text}
           fontFamily={fontFamily}
-          fontWeight={600}
+          fontWeight={700}
           scale={1}
           speed={reduceMotion ? 0 : 0.7}
           mouseTilt={0}

@@ -35,7 +35,8 @@
   --sidebar-accent-foreground: oklch(0.3232 0.1376 260.7577);
   --sidebar-border: oklch(0.8994 0.0064 255.4779);
   --sidebar-ring: oklch(0.6007 0.1903 257.9419);
-  --font-sans: Inter, sans-serif;
+  /* UI default → Inter. Titles use Satoshi. */
+  --font-sans: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: JetBrains Mono, monospace;
   --radius: 1.5rem;
@@ -79,7 +80,8 @@
   --secondary: oklch(0.2411 0.0097 248.229);
   --secondary-foreground: oklch(0.9008 0.0105 247.9427);
   --muted: oklch(0.2207 0.0091 255.6084);
-  --muted-foreground: oklch(0.6806 0.0194 245.5027);
+  /* Slightly brighter than light-mode muted for contrast on near-black bg */
+  --muted-foreground: oklch(0.78 0.014 250);
   --accent: oklch(0.2804 0.0598 257.709);
   --accent-foreground: oklch(0.8435 0.0803 251.0277);
   --destructive: oklch(0.6789 0.2096 21.9475);
@@ -100,7 +102,7 @@
   --sidebar-accent-foreground: oklch(0.8435 0.0803 251.0277);
   --sidebar-border: oklch(0.2594 0.0104 260.6979);
   --sidebar-ring: oklch(0.6496 0.1885 257.7207);
-  --font-sans: Inter, sans-serif;
+  --font-sans: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: JetBrains Mono, monospace;
   --radius: 1.5rem;
@@ -160,7 +162,9 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
+  /* Satoshi — next/font already puts the full stack on --font-display-face */
+  --font-display: var(--font-display-face);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
 
@@ -192,6 +196,12 @@
     button {
       @apply cursor-pointer;
     }
+  }
+  /* Display face on headings; document UI uses Inter */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
   }
   ::selection {
     background-color: #111;

@@ -1,4 +1,4 @@
-export const SECTIONS = ["about", "projects", "contact"] as const;
+export const SECTIONS = ["projects", "stack", "contact"] as const;
 export type SectionId = (typeof SECTIONS)[number];
 
 export const SCROLL_THRESHOLD = 50;

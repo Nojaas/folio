@@ -59,8 +59,8 @@ export function DynamicIsland() {
       navMode,
       isMobile,
       dockBottom,
-      t.nav.about,
       t.nav.projects,
+      t.nav.stack,
       t.nav.contact,
       t.nav.available,
     ].join("|"),
@@ -76,7 +76,10 @@ export function DynamicIsland() {
       emitSectionArrived(id);
 
       const target = getSectionScrollTarget(id, lenis);
-      if (target == null) return;
+      if (target == null) {
+        unlock();
+        return;
+      }
 
       const current = lenis?.scroll ?? window.scrollY;
       if (Math.abs(current - target) < 4) {
@@ -84,6 +87,7 @@ export function DynamicIsland() {
         return;
       }
 
+      // Freeze spy on the clicked tab until scroll settles (safety timeout in lock).
       lock();
       if (lenis) {
         lenis.scrollTo(target, {
@@ -93,15 +97,14 @@ export function DynamicIsland() {
         });
       } else {
         window.scrollTo({ top: target, behavior: "smooth" });
-        window.setTimeout(unlock, 1200);
       }
     },
     [lenis, setActive, lock, unlock],
   );
 
   const labels: Record<SectionId, string> = {
-    about: t.nav.about,
     projects: t.nav.projects,
+    stack: t.nav.stack,
     contact: t.nav.contact,
   };
 

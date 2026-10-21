@@ -84,32 +84,33 @@ const LIST = "relative m-0 flex h-full list-none flex-col p-0";
 const ITEM =
   "group/item relative min-h-14 flex-[1_1_0] overflow-hidden [container-type:size]";
 const DIVIDER =
-  "pointer-events-none absolute top-0 right-0 left-0 h-px origin-left bg-[var(--flowing-menu-border,rgba(255,255,255,0.14))]";
+  "pointer-events-none absolute top-0 right-0 left-0 h-px origin-left bg-[var(--flowing-menu-border,color-mix(in_oklab,var(--foreground)_10%,transparent))]";
 const LINK =
   // Use sm:/max-sm: for py — bare py-0 can win the conflict and kill mobile padding.
   "relative box-border grid h-full w-full cursor-pointer grid-cols-[1fr_auto_1fr] items-center gap-4 border-0 bg-transparent px-[clamp(16px,4cqw,40px)] text-left text-inherit no-underline outline-none transition-opacity duration-[450ms] ease-[ease] [-webkit-tap-highlight-color:transparent] [font:inherit] group-data-[align=left]/fm:grid-cols-[auto_1fr_auto] group-data-[dimmed]/item:opacity-32 focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-current sm:py-0 max-sm:items-start max-sm:gap-3 max-sm:py-5";
 const INDEX =
-  "min-w-[1.6em] justify-self-start text-[clamp(11px,12cqh,15px)] tabular-nums opacity-50 max-sm:self-start max-sm:pt-1";
+  "min-w-[1.6em] justify-self-start text-[clamp(11px,12cqh,15px)] tabular-nums text-muted-foreground max-sm:self-start max-sm:pt-1";
 const LABEL_STACK =
   "flex min-w-0 flex-col gap-1 justify-self-center overflow-hidden group-data-[align=left]/fm:justify-self-start max-sm:gap-1.5";
 const LABEL =
   // Desktop keeps full cqh scale. Mobile caps size so py + desc fit in equal rows.
-  "flex items-center gap-[0.28em] overflow-hidden py-[0.06em] text-[clamp(16px,40cqh,140px)] leading-[1.1] font-medium tracking-[-0.035em] whitespace-nowrap max-sm:text-[clamp(1.125rem,28cqh,1.5rem)]";
+  "font-display flex items-center gap-[0.28em] overflow-hidden py-[0.06em] text-[clamp(16px,40cqh,140px)] leading-[1.1] font-medium tracking-[-0.035em] text-foreground whitespace-nowrap max-sm:text-[clamp(1.125rem,28cqh,1.5rem)]";
 const LABEL_TEXT = "block";
 const DESC =
   // Desktop: single line. Mobile: wrap up to 3 lines inside equal-height rows.
-  "truncate text-[clamp(11px,11cqh,13px)] leading-snug font-normal tracking-normal text-current/55 whitespace-nowrap max-sm:line-clamp-3 max-sm:whitespace-normal";
+  "truncate text-[clamp(11px,11cqh,13px)] leading-snug font-normal tracking-normal text-muted-foreground whitespace-nowrap max-sm:line-clamp-3 max-sm:whitespace-normal";
 const DOT = "block h-[0.2em] w-[0.2em] shrink-0 rounded-full bg-current";
 const END =
   "flex items-center gap-3.5 justify-self-end max-sm:self-start max-sm:pt-1";
-const META = "text-[clamp(11px,12cqh,15px)] tabular-nums opacity-50";
-const ARROW = "grid place-items-center opacity-55";
+const META =
+  "text-[clamp(11px,12cqh,15px)] tabular-nums text-muted-foreground";
+const ARROW = "grid place-items-center text-muted-foreground";
 const BAND =
   "pointer-events-none invisible absolute inset-0 z-[1] overflow-hidden [clip-path:inset(50%_0_50%_0)]";
 const TRACK = "flex h-full w-max items-center will-change-transform";
 const PART = "flex h-full shrink-0 items-center";
 const PART_TEXT =
-  "px-[0.4em] text-[clamp(14px,calc(38cqh*var(--flowing-menu-band,1)),130px)] leading-[1.1] font-normal tracking-[-0.025em] whitespace-nowrap";
+  "font-display px-[0.4em] text-[clamp(14px,calc(38cqh*var(--flowing-menu-band,1)),130px)] leading-[1.1] font-normal tracking-[-0.025em] whitespace-nowrap";
 const IMAGE =
   "mx-[calc(3.5cqh*var(--flowing-menu-band,1))] block aspect-[2.2/1] h-[calc(56cqh*var(--flowing-menu-band,1))] shrink-0 overflow-hidden rounded-full border-[0.5px] border-background/75 bg-[length:125%] bg-top dark:border-background/85 group-data-[shape=circle]/fm:aspect-square group-data-[shape=rounded]/fm:aspect-[3/2] group-data-[shape=rounded]/fm:rounded-[calc(10cqh*var(--flowing-menu-band,1))]";
 const FLOAT =
@@ -152,11 +153,11 @@ function FlowingMenu({
   bandInset = 0,
   bandRadius = 0,
   carryContent = false,
-  textColor = "#ffffff",
-  bgColor = "#120F17",
-  marqueeBgColor = "#ffffff",
-  marqueeTextColor = "#120F17",
-  borderColor = "rgba(255, 255, 255, 0.14)",
+  textColor = "var(--foreground)",
+  bgColor = "transparent",
+  marqueeBgColor = "var(--foreground)",
+  marqueeTextColor = "var(--background)",
+  borderColor = "color-mix(in oklab, var(--foreground) 10%, transparent)",
   dividers = true,
   dimInactive = false,
   align = "center",

@@ -22,8 +22,8 @@ export function NavContent({
 }) {
   const items = (
     [
-      { id: "about" as const, label: labels.about },
       { id: "projects" as const, label: labels.projects },
+      { id: "stack" as const, label: labels.stack },
       { id: "contact" as const, label: labels.contact },
     ] as const
   );

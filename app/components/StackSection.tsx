@@ -65,7 +65,7 @@ export function StackSection() {
                         {row}
                       </p>
                     ) : (
-                      <div className="py-4 text-2xl font-bold tracking-tight text-foreground sm:py-5 sm:text-3xl md:text-4xl">
+                      <div className="font-display py-4 text-2xl font-bold tracking-tight text-foreground sm:py-5 sm:text-3xl md:text-4xl">
                         {row}
                       </div>
                     )}

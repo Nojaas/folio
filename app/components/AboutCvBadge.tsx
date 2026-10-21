@@ -15,7 +15,7 @@ export function AboutCvBadge({ className }: { className?: string }) {
       download
       aria-label={t.contact.cv}
       className={cn(
-        "inline-flex shrink-0 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30",
+        "inline-flex shrink-0 select-none text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30",
         className,
       )}
     >

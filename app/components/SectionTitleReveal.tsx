@@ -23,11 +23,11 @@ export function SectionTitleReveal({
   const inView = useInView(ref, { once: true, amount: 0.35 });
 
   if (reduceMotion) {
-    return <div className={className}>{children}</div>;
+    return <div className={cn("font-display", className)}>{children}</div>;
   }
 
   return (
-    <div ref={ref} className={cn("overflow-hidden", className)}>
+    <div ref={ref} className={cn("overflow-hidden font-display", className)}>
       <motion.div
         initial={{ y: "20%", opacity: 0 }}
         animate={inView ? { y: "0%", opacity: 1 } : { y: "35%", opacity: 0 }}

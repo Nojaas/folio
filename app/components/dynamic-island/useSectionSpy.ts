@@ -6,51 +6,60 @@ import {
 } from "@/app/components/dynamic-island/constants";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-/** IntersectionObserver scroll-spy with lock during programmatic nav. */
+/**
+ * Viewport line for the active section.
+ * Matches getSectionScrollTarget (section centered → mid at ~50%).
+ */
+const VIEW_LINE = 0.5;
+/** Must cover Lenis scrollTo duration (~1.3s) + a little slack. */
+const LOCK_MS = 1500;
+const CONTACT_BOTTOM_PX = 32;
+
+function readActive(): SectionId {
+  const maxScroll = Math.max(
+    0,
+    document.documentElement.scrollHeight - window.innerHeight,
+  );
+  if (window.scrollY >= maxScroll - CONTACT_BOTTOM_PX) return "contact";
+
+  const line = window.innerHeight * VIEW_LINE;
+  let current: SectionId = SECTIONS[0];
+
+  for (const id of SECTIONS) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    if (el.getBoundingClientRect().top <= line) current = id;
+  }
+
+  return current;
+}
+
+/** Scroll-position spy with lock during programmatic nav. */
 export function useSectionSpy() {
-  const [active, setActive] = useState<SectionId>("about");
+  const [active, setActiveState] = useState<SectionId>("projects");
+  const activeRef = useRef<SectionId>(active);
   const lockedRef = useRef(false);
   const unlockTimerRef = useRef<number | null>(null);
+  const rafRef = useRef(0);
 
-  useEffect(() => {
-    const elements = SECTIONS.map((id) => document.getElementById(id)).filter(
-      (el): el is HTMLElement => Boolean(el),
-    );
-    if (!elements.length) return;
-
-    const ratios = new Map<string, number>();
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (lockedRef.current) return;
-
-        for (const entry of entries) {
-          ratios.set(
-            entry.target.id,
-            entry.isIntersecting ? entry.intersectionRatio : 0,
-          );
-        }
-
-        let best: SectionId | null = null;
-        let bestRatio = 0;
-        for (const id of SECTIONS) {
-          const ratio = ratios.get(id) ?? 0;
-          if (ratio > bestRatio) {
-            bestRatio = ratio;
-            best = id;
-          }
-        }
-        if (best && bestRatio > 0) setActive(best);
-      },
-      {
-        rootMargin: "-28% 0px -42% 0px",
-        threshold: [0, 0.1, 0.25, 0.4, 0.55, 0.7, 1],
-      },
-    );
-
-    elements.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+  const setActive = useCallback((id: SectionId) => {
+    if (activeRef.current === id) return;
+    activeRef.current = id;
+    setActiveState(id);
   }, []);
+
+  const sync = useCallback(() => {
+    if (lockedRef.current) return;
+    setActive(readActive());
+  }, [setActive]);
+
+  const scheduleSync = useCallback(() => {
+    if (rafRef.current) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = 0;
+      sync();
+    });
+  }, [sync]);
 
   const unlock = useCallback(() => {
     lockedRef.current = false;
@@ -58,24 +67,34 @@ export function useSectionSpy() {
       window.clearTimeout(unlockTimerRef.current);
       unlockTimerRef.current = null;
     }
-  }, []);
+    // Force a fresh read — IO used to skip updates while locked and never catch up.
+    setActive(readActive());
+  }, [setActive]);
 
   const lock = useCallback(() => {
     lockedRef.current = true;
     if (unlockTimerRef.current != null) {
       window.clearTimeout(unlockTimerRef.current);
     }
-    unlockTimerRef.current = window.setTimeout(unlock, 1600);
+    unlockTimerRef.current = window.setTimeout(unlock, LOCK_MS);
   }, [unlock]);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    sync();
+
+    const onScroll = () => scheduleSync();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", scheduleSync);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", scheduleSync);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
       if (unlockTimerRef.current != null) {
         window.clearTimeout(unlockTimerRef.current);
       }
-    },
-    [],
-  );
+    };
+  }, [sync, scheduleSync]);
 
   return { active, setActive, lock, unlock };
 }
