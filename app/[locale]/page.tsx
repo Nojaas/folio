@@ -50,10 +50,10 @@ export default function HomePage() {
       <main className="relative z-10 flex min-h-[100svh] w-full max-w-[100vw] flex-col overflow-x-hidden pb-[max(5.5rem,env(safe-area-inset-bottom))] md:pb-0">
         <section
           id="home"
-          className="relative flex h-[100svh] flex-col justify-end px-2.5 pb-0"
+          className="relative flex h-[100svh] flex-col justify-end px-2.5 pb-2 sm:pb-3"
         >
           <div className="w-full">
-            <HeroMetallicTitle text={`${DATA.name}.`} />
+            <HeroMetallicTitle name={DATA.name} />
           </div>
         </section>
 

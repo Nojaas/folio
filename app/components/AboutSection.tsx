@@ -36,7 +36,7 @@ export function AboutSection() {
   const { t, locale } = useLocale();
   const [wordAnimationEnd, setWordAnimationEnd] = useState(END_DESKTOP);
   const body = [
-    t.about.p1,
+    `${t.about.lead} ${t.about.p1}`,
     t.about.p2,
     `${t.about.p3Available}${t.about.p3Rest}`,
   ].join("\n\n");
@@ -65,13 +65,19 @@ export function AboutSection() {
       </div>
 
       <ContentRail>
-        <ScrollReveal
-          key={`about-body-${locale}-${wordAnimationEnd}`}
-          {...REVEAL}
-          wordAnimationEnd={wordAnimationEnd}
-        >
-          {body}
-        </ScrollReveal>
+        {/*
+          Hang first line mid-column via float spacer (not text-indent —
+          indent breaks ScrollReveal's inline-block words).
+        */}
+        <div className="about-lead-hang">
+          <ScrollReveal
+            key={`about-body-${locale}-${wordAnimationEnd}`}
+            {...REVEAL}
+            wordAnimationEnd={wordAnimationEnd}
+          >
+            {body}
+          </ScrollReveal>
+        </div>
         <div className="mt-6 flex justify-center">
           <AboutCvBadge />
         </div>

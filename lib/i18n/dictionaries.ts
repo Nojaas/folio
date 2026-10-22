@@ -36,6 +36,8 @@ export type Dictionary = {
   };
   about: {
     title: string;
+    /** Hanging first-line lead (flows into p1) */
+    lead: string;
     p1: string;
     p2: string;
     /** Linked word → contact (e.g. Disponible / Available) */
@@ -97,6 +99,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     },
     about: {
       title: "À propos.",
+      lead: "Développeur fullstack créatif.",
       p1: "Je développe aujourd'hui principalement en React et TypeScript, avec un vrai back NodeJS. J'ai travaillé sur des back-offices, des SaaS et des applications métier, avec une approche full-stack qui va de l'interface jusqu'à la mise en production.",
       p2: "Je ne me contente pas d'exécuter une demande. J'aime comprendre le besoin derrière une fonctionnalité pour faire des choix techniques et UI qui ont du sens.",
       p3Available: "Disponible",
@@ -180,6 +183,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     },
     about: {
       title: "About.",
+      lead: "Creative fullstack developer.",
       p1: "These days I mainly work with React and TypeScript, backed by a real Node.js back end. I've worked on back offices, SaaS products and business applications, with a full-stack approach that runs from the interface all the way to production.",
       p2: "I don't just carry out requests. I like to understand the need behind a feature so I can make technical and UI choices that make sense.",
       p3Available: "Available",

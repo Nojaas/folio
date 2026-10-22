@@ -281,6 +281,15 @@ body::-webkit-scrollbar {
   }
 }
 
+@keyframes availability-ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 /* Fade in from 0, then blink (blink starts after appear) */
 .animate-availability-dot {
   animation:
@@ -292,6 +301,23 @@ body::-webkit-scrollbar {
 .scroll-line-mask {
   display: block;
   clip-path: polygon(-10% 0, 110% 0, 110% 120%, -10% 120%);
+}
+
+/*
+ * About lead hang: push the first line mid-column without text-indent
+ * (indent + ScrollReveal inline-block words → overlapping layout).
+ */
+.about-lead-hang > div > span.block > span.block:first-child::before {
+  content: "";
+  float: left;
+  width: 32%;
+  height: 1.15em;
+}
+
+@media (min-width: 640px) {
+  .about-lead-hang > div > span.block > span.block:first-child::before {
+    width: 40%;
+  }
 }
 
 ::view-transition-old(root),

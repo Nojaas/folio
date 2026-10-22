@@ -1,7 +1,6 @@
 "use client";
 
 import { AvailabilityDot } from "@/app/components/AvailabilityDot";
-import { LineContentReveal } from "@/app/components/LineContentReveal";
 import { ContentRail, Section } from "@/app/components/Section";
 import { SectionTitleReveal } from "@/app/components/SectionTitleReveal";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
@@ -10,17 +9,7 @@ export function AvailabilitySection() {
   const { t, locale } = useLocale();
   const copy = t.availability;
 
-  const rows = [
-    {
-      key: "status",
-      primary: (
-        <span className="inline-flex items-center gap-3">
-          <AvailabilityDot delayMs={400} className="size-2.5 text-foreground" />
-          {copy.status.badge}
-        </span>
-      ),
-      detail: copy.status.detail,
-    },
+  const secondary = [
     {
       key: "location",
       primary: copy.location.primary,
@@ -47,28 +36,29 @@ export function AvailabilitySection() {
       </SectionTitleReveal>
 
       <ContentRail>
-        <div className="flex flex-col">
-          {rows.map((row, index) => {
-            const isLast = index === rows.length - 1;
-
-            return (
-              <LineContentReveal
-                key={`${locale}-${row.key}`}
-                index={index}
-                leadingLine={index > 0}
-                trailingLine={isLast}
-              >
-                <div className="space-y-2 py-5 sm:py-6">
-                  <p className="font-display text-3xl font-bold tracking-tighter text-foreground sm:text-4xl">
-                    {row.primary}
-                  </p>
-                  <p className="text-sm text-muted-foreground sm:text-[15px]">
-                    {row.detail}
-                  </p>
-                </div>
-              </LineContentReveal>
-            );
-          })}
+        <div className="space-y-8">
+          <div className="space-y-3 border-b border-foreground/10 pb-8">
+            <p className="font-display inline-flex items-center gap-2.5 text-[clamp(2.25rem,7vw,3.75rem)] leading-[0.95] font-bold tracking-tighter text-foreground">
+              <AvailabilityDot
+                delayMs={400}
+                className="size-2.5 text-foreground sm:size-3"
+              />
+              {copy.status.badge}
+            </p>
+            <p className="max-w-md text-sm text-muted-foreground sm:text-[15px]">
+              {copy.status.detail}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-10">
+            {secondary.map((fact) => (
+              <div key={fact.key} className="space-y-1">
+                <p className="font-display text-xl font-bold tracking-tight text-foreground sm:text-xl">
+                  {fact.primary}
+                </p>
+                <p className="text-sm text-muted-foreground">{fact.detail}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </ContentRail>
     </Section>
