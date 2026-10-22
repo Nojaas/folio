@@ -4,6 +4,7 @@ import { SmoothScroll } from "@/app/components/SmoothScroll";
 import { ThemeProvider } from "@/app/components/ThemeProvider";
 import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import localFont from "next/font/local";
@@ -106,6 +107,7 @@ export default async function RootLayout({
               <div className="relative">{children}</div>
             </ClickSparkProvider>
             <Analytics />
+            <SpeedInsights />
             <ClarityAnalytics />
           </SmoothScroll>
         </ThemeProvider>
