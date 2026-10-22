@@ -86,6 +86,11 @@ export default async function RootLayout({
         "min-h-screen bg-background font-sans antialiased",
       )}
     >
+      <head>
+        <link rel="preconnect" href="https://www.clarity.ms" />
+        <link rel="preconnect" href="https://scripts.clarity.ms" />
+        <link rel="dns-prefetch" href="https://h.clarity.ms" />
+      </head>
       <body>
         <script
           dangerouslySetInnerHTML={{

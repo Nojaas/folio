@@ -21,10 +21,12 @@ export function LanguageToggle({
 }: LanguageToggleProps) {
   const { locale, t } = useLocale();
   const next = locale === "fr" ? "en" : "fr";
+  const current = locale.toUpperCase();
+  const switchHint = locale === "fr" ? t.nav.switchToEn : t.nav.switchToFr;
 
   return (
     <DownFastLink
-      label={locale.toUpperCase()}
+      label={current}
       nextLabel={next.toUpperCase()}
       href={localePath(next)}
       onClick={() => {
@@ -37,7 +39,8 @@ export function LanguageToggle({
           : "text-foreground",
         className,
       )}
-      aria-label={locale === "fr" ? t.nav.switchToEn : t.nav.switchToFr}
+      // Visible label must appear in the accessible name (axe label-content-name-mismatch).
+      aria-label={`${current} — ${switchHint}`}
     />
   );
 }

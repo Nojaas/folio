@@ -362,7 +362,8 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
   ]);
 
   return (
-    <div ref={containerRef} className={containerClassName} aria-label={text ?? undefined}>
+    <div ref={containerRef} className={containerClassName}>
+      {text !== null ? <p className="sr-only">{text}</p> : null}
       <span
         ref={textRef}
         className={`block ${textClassName}`}

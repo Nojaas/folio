@@ -173,6 +173,8 @@ function FlowingMenu({
 }: FlowingMenuProps) {
   const rootRef = useRef<HTMLElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
+  // Defer cover downloads until the menu is near the viewport (PSI offscreen-images).
+  const [coversReady, setCoversReady] = useState(false);
   const rows = useRef<Row[]>([]);
   const marquees = useRef<Marquee[]>([]);
   const metrics = useRef<(Metric | null)[]>([]);
@@ -595,6 +597,25 @@ function FlowingMenu({
   const measureRef = useRef(measure);
   measureRef.current = measure;
 
+  useEffect(() => {
+    if (coversReady) return;
+    const root = rootRef.current;
+    if (!root || typeof IntersectionObserver === "undefined") {
+      setCoversReady(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setCoversReady(true);
+        io.disconnect();
+      },
+      { rootMargin: "240px 0px" },
+    );
+    io.observe(root);
+    return () => io.disconnect();
+  }, [coversReady]);
+
   useIsoLayoutEffect(() => {
     measureRef.current();
     const root = rootRef.current;
@@ -906,7 +927,7 @@ function FlowingMenu({
                         <span className={PART_TEXT}>
                           {item.marquee ?? item.text}
                         </span>
-                        {cover && (
+                        {cover && coversReady && (
                           <span
                             className={IMAGE}
                             style={{ backgroundImage: `url(${cover})` }}
@@ -954,7 +975,7 @@ function FlowingMenu({
                             <span className={PART_TEXT}>
                               {item.marquee ?? item.text}
                             </span>
-                            {cover && (
+                            {cover && coversReady && (
                               <span
                                 className={IMAGE}
                                 style={{ backgroundImage: `url(${cover})` }}

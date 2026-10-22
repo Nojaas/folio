@@ -13,7 +13,8 @@ export function AboutCvBadge({ className }: { className?: string }) {
     <a
       href="/cv.pdf"
       download
-      aria-label={t.contact.cv}
+      // Ring text must appear in the accessible name (axe label-content-name-mismatch).
+      aria-label={`${t.contact.cv} — ${t.about.cvRing.trim()}`}
       className={cn(
         "inline-flex shrink-0 select-none text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30",
         className,

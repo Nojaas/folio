@@ -1,16 +1,42 @@
 "use client";
 
 import { AboutSection } from "@/app/components/AboutSection";
-import { AvailabilitySection } from "@/app/components/AvailabilitySection";
-import { ContactSection } from "@/app/components/ContactSection";
-import { Footer } from "@/app/components/Footer";
 import { HeroMetallicTitle } from "@/app/components/HeroMetallicTitle";
-import { ProjectsSection } from "@/app/components/ProjectsSection";
 import { ScrollProgress } from "@/app/components/ScrollProgress";
-import { ScrollStrandsBackground } from "@/app/components/ScrollStrandsBackground";
 import { SiteNav } from "@/app/components/SiteNav";
-import { StackSection } from "@/app/components/StackSection";
 import { DATA } from "@/data/resume";
+import dynamic from "next/dynamic";
+
+const ScrollStrandsBackground = dynamic(
+  () =>
+    import("@/app/components/ScrollStrandsBackground").then((m) => ({
+      default: m.ScrollStrandsBackground,
+    })),
+  { ssr: false },
+);
+const ProjectsSection = dynamic(() =>
+  import("@/app/components/ProjectsSection").then((m) => ({
+    default: m.ProjectsSection,
+  })),
+);
+const StackSection = dynamic(() =>
+  import("@/app/components/StackSection").then((m) => ({
+    default: m.StackSection,
+  })),
+);
+const AvailabilitySection = dynamic(() =>
+  import("@/app/components/AvailabilitySection").then((m) => ({
+    default: m.AvailabilitySection,
+  })),
+);
+const ContactSection = dynamic(() =>
+  import("@/app/components/ContactSection").then((m) => ({
+    default: m.ContactSection,
+  })),
+);
+const Footer = dynamic(() =>
+  import("@/app/components/Footer").then((m) => ({ default: m.Footer })),
+);
 
 export default function HomePage() {
   return (

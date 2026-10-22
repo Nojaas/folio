@@ -25,6 +25,8 @@ export interface MetallicPaintProps {
   dpr?: number;
   className?: string;
   style?: CSSProperties;
+  /** Fires once the first painted frame is ready (for LCP text → canvas handoff). */
+  onReady?: () => void;
 }
 
 type Rgba = number[];
@@ -531,12 +533,16 @@ export default function MetallicPaint({
   paused = false,
   dpr,
   className = '',
-  style
+  style,
+  onReady,
 }: MetallicPaintProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<Engine | null>(null);
   const settingsRef = useRef<Settings>(null as unknown as Settings);
+  const onReadyRef = useRef(onReady);
+  const readySent = useRef(false);
+  onReadyRef.current = onReady;
 
   settingsRef.current = {
     tint: parseColor(color, [1, 1, 1, 1]),
@@ -823,7 +829,12 @@ export default function MetallicPaint({
       .then(canvas => {
         if (!active || !canvas) return;
         const data = processShape(canvas);
-        if (active) engineRef.current?.setImage(data);
+        if (!active) return;
+        engineRef.current?.setImage(data);
+        if (!readySent.current) {
+          readySent.current = true;
+          requestAnimationFrame(() => onReadyRef.current?.());
+        }
       })
       .catch(() => {
         if (active) engineRef.current?.setImage(null);

@@ -19,16 +19,13 @@ export function HeroMetallicTitle({ text, className }: HeroMetallicTitleProps) {
 
   useEffect(() => {
     setMounted(true);
-    // next/font family name lives on --font-display-face (Satoshi).
     const display = getComputedStyle(document.documentElement)
       .getPropertyValue("--font-display-face")
       .trim();
-    // Prefer the primary face only — canvas font stacks are flaky with fallbacks.
     const primary = display.split(",")[0]?.trim();
     if (primary) setFontFamily(primary);
   }, []);
 
-  // Match site default (dark) until hydrated
   const lightMode = mounted && resolvedTheme === "light";
   const color = lightMode ? "#b4b4ba" : "#fff";
 
