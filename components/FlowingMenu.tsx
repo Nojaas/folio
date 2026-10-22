@@ -97,20 +97,19 @@ const LABEL =
   "font-display flex items-center gap-[0.28em] overflow-hidden py-[0.06em] text-[clamp(16px,40cqh,140px)] leading-[1.1] font-medium tracking-[-0.035em] text-foreground whitespace-nowrap max-sm:text-[clamp(1.125rem,28cqh,1.5rem)]";
 const LABEL_TEXT = "block";
 const DESC =
-  // Desktop: single line. Mobile: wrap up to 3 lines inside equal-height rows.
-  "truncate text-[clamp(11px,11cqh,13px)] leading-snug font-normal tracking-normal text-muted-foreground whitespace-nowrap max-sm:line-clamp-3 max-sm:whitespace-normal";
+  // Wrap on all sizes when the rail narrows (tablet / resized desktop) — same as mobile.
+  "line-clamp-3 text-[clamp(11px,11cqh,13px)] leading-snug font-normal tracking-normal text-muted-foreground whitespace-normal";
 const DOT = "block h-[0.2em] w-[0.2em] shrink-0 rounded-full bg-current";
 const END =
   "flex items-center gap-3.5 justify-self-end max-sm:self-start max-sm:pt-1";
-const META =
-  "text-[clamp(11px,12cqh,15px)] tabular-nums text-muted-foreground";
+const META = "text-[clamp(11px,12cqh,15px)] tabular-nums text-muted-foreground";
 const ARROW = "grid place-items-center text-muted-foreground";
 const BAND =
   "pointer-events-none invisible absolute inset-0 z-[1] overflow-hidden [clip-path:inset(50%_0_50%_0)]";
 const TRACK = "flex h-full w-max items-center will-change-transform";
 const PART = "flex h-full shrink-0 items-center";
 const PART_TEXT =
-  "font-display px-[0.4em] text-[clamp(14px,calc(38cqh*var(--flowing-menu-band,1)),130px)] leading-[1.1] font-normal tracking-[-0.025em] whitespace-nowrap";
+  "font-display px-[0.4em] text-[clamp(14px,calc(38cqh*var(--flowing-menu-band,1)),130px)] leading-[1.1] font-medium tracking-[-0.025em] whitespace-nowrap";
 const IMAGE =
   "mx-[calc(3.5cqh*var(--flowing-menu-band,1))] block aspect-[2.2/1] h-[calc(56cqh*var(--flowing-menu-band,1))] shrink-0 overflow-hidden rounded-full border-[0.5px] border-background/75 bg-[length:125%] bg-top dark:border-background/85 group-data-[shape=circle]/fm:aspect-square group-data-[shape=rounded]/fm:aspect-[3/2] group-data-[shape=rounded]/fm:rounded-[calc(10cqh*var(--flowing-menu-band,1))]";
 const FLOAT =

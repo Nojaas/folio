@@ -1,3 +1,4 @@
+import { ClarityAnalytics } from "@/app/components/ClarityAnalytics";
 import { ClickSparkProvider } from "@/app/components/ClickSparkProvider";
 import { SmoothScroll } from "@/app/components/SmoothScroll";
 import { ThemeProvider } from "@/app/components/ThemeProvider";
@@ -105,6 +106,7 @@ export default async function RootLayout({
               <div className="relative">{children}</div>
             </ClickSparkProvider>
             <Analytics />
+            <ClarityAnalytics />
           </SmoothScroll>
         </ThemeProvider>
       </body>
