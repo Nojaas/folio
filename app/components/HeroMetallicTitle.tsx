@@ -1,5 +1,6 @@
 "use client";
 
+import { isSafariTouch } from "@/lib/browser";
 import { cn } from "@/lib/utils";
 import { useReducedMotion } from "motion/react";
 import { useTheme } from "next-themes";
@@ -30,9 +31,19 @@ export function HeroMetallicTitle({ name, className }: HeroMetallicTitleProps) {
   const { resolvedTheme } = useTheme();
   const reduceMotion = useReducedMotion();
   const [mounted, setMounted] = useState(false);
+  /** Safari: freeze WebGL paint once scrolling — GPU + scroll = intermittent hitch. */
+  const [scrollPaused, setScrollPaused] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isSafariTouch()) return;
+    const sync = () => setScrollPaused(window.scrollY > 8);
+    sync();
+    window.addEventListener("scroll", sync, { passive: true });
+    return () => window.removeEventListener("scroll", sync);
   }, []);
 
   const lightMode = mounted && resolvedTheme === "light";
@@ -84,6 +95,7 @@ export function HeroMetallicTitle({ name, className }: HeroMetallicTitleProps) {
               edgeBend={0.5}
               angle={50}
               intro
+              paused={scrollPaused}
               lightMode={lightMode}
               color={color}
               backgroundColor="transparent"

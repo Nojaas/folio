@@ -844,9 +844,28 @@ export default function MetallicPaint({
     };
   }, [imageSrc, text, fontFamily, fontWeight]);
 
+  // Only redraw when paint inputs change — bare useEffect ran every React render
+  // (resize + wake), which hitch Safari when parents re-render on scroll start.
   useEffect(() => {
     engineRef.current?.redraw();
-  });
+  }, [
+    color,
+    backgroundColor,
+    density,
+    softness,
+    dispersion,
+    distortion,
+    edgeBend,
+    angle,
+    speed,
+    scale,
+    rotation,
+    mouseTilt,
+    lightMode,
+    intro,
+    paused,
+    dpr,
+  ]);
 
   return (
     <div ref={containerRef} className={`relative h-full w-full ${className}`.trim()} style={style}>

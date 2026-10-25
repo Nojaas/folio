@@ -11,6 +11,7 @@ import {
   useScroll,
   useSpring,
   useTransform,
+  type MotionValue,
 } from "motion/react";
 import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
@@ -60,11 +61,19 @@ function useThemeLight() {
 }
 
 function ScrollStrandsMobile() {
-  const isLight = useThemeLight();
   const [safari] = useState(isSafariBrowser);
-  const { scrollYProgress } = useScroll();
-  const scrollScale = useTransform(scrollYProgress, [0, 1], [0.36, 0.88]);
+  // Safari: no useScroll — static scale only (scroll-linked scale stuttered).
+  if (safari) return <ScrollStrandsMobileStatic />;
+  return <ScrollStrandsMobileScaled />;
+}
 
+function ScrollStrandsMobileShell({
+  scale,
+  isLight,
+}: {
+  scale: number | MotionValue<number>;
+  isLight: boolean;
+}) {
   return (
     <motion.div
       aria-hidden
@@ -78,7 +87,7 @@ function ScrollStrandsMobile() {
           className={cn(
             "h-[min(100vw,100svh)] w-[min(100vw,100svh)] opacity-85",
           )}
-          style={{ scale: safari ? SCALE_MOBILE_STATIC : scrollScale }}
+          style={{ scale }}
         >
           <Strands
             className="h-full w-full"
@@ -95,6 +104,20 @@ function ScrollStrandsMobile() {
       </div>
     </motion.div>
   );
+}
+
+function ScrollStrandsMobileStatic() {
+  const isLight = useThemeLight();
+  return (
+    <ScrollStrandsMobileShell scale={SCALE_MOBILE_STATIC} isLight={isLight} />
+  );
+}
+
+function ScrollStrandsMobileScaled() {
+  const isLight = useThemeLight();
+  const { scrollYProgress } = useScroll();
+  const scrollScale = useTransform(scrollYProgress, [0, 1], [0.36, 0.88]);
+  return <ScrollStrandsMobileShell scale={scrollScale} isLight={isLight} />;
 }
 
 function ScrollStrandsDesktop() {

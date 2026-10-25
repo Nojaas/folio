@@ -1,14 +1,16 @@
 "use client";
 
 import "lenis/dist/lenis.css";
+import { isSafariTouch } from "@/lib/browser";
+import { MOBILE_MAX } from "@/lib/constants/layout";
 import { ReactLenis, useLenis } from "lenis/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Safari iOS: URL-bar show/hide fires vertical resize → ST.refresh mid-scrub → stuck opacity.
+// Safari iOS: URL-bar show/hide fires vertical resize → ST.refresh mid-scrub → stutter / stuck opacity.
 ScrollTrigger.config({ ignoreMobileResize: true });
 // Keep scrub in sync after background tabs / long frames (Lenis + GSAP).
 gsap.ticker.lagSmoothing(0);
@@ -28,21 +30,42 @@ function ScrollToTopOnLoad() {
   return null;
 }
 
-/** Keep GSAP ScrollTrigger in sync with Lenis (ScrollReveal scrub). */
+/**
+ * Keep GSAP ScrollTrigger in sync with Lenis.
+ *
+ * Safari touch pitfalls we hit before:
+ * 1. Manual resize → refresh() undid ignoreMobileResize (URL bar = hitch at scroll start).
+ * 2. Lenis rAF + window scroll both calling update() = double main-thread work.
+ */
 function LenisScrollTriggerSync() {
+  const [safariTouch] = useState(() =>
+    typeof window !== "undefined" ? isSafariTouch() : false,
+  );
+
   useLenis(() => {
+    // On Safari touch, prefer the native scroll listener — Lenis rAF can stall mid-momentum.
+    if (safariTouch) return;
     ScrollTrigger.update();
   });
 
   useEffect(() => {
-    const refresh = () => ScrollTrigger.refresh();
-    // Native scroll backup — Safari can stall Lenis/rAF during momentum touch scroll.
+    ScrollTrigger.refresh();
+
     const onScroll = () => ScrollTrigger.update();
-    refresh();
-    window.addEventListener("resize", refresh);
+
+    // Desktop / non-Safari: refresh layout on resize.
+    // Mobile (esp. Safari): skip — URL bar toggle is a vertical resize and was the hitch.
+    const onResize = () => {
+      if (window.matchMedia(`(max-width: ${MOBILE_MAX}px)`).matches) return;
+      ScrollTrigger.refresh();
+    };
+
+    window.addEventListener("resize", onResize);
+    // Safari: needed. Others: harmless backup if Lenis skips a frame.
     window.addEventListener("scroll", onScroll, { passive: true });
+
     return () => {
-      window.removeEventListener("resize", refresh);
+      window.removeEventListener("resize", onResize);
       window.removeEventListener("scroll", onScroll);
     };
   }, []);
