@@ -34,7 +34,7 @@ export function AvailableContent({
         whileHover="hover"
         className="inline-flex shrink-0 items-center gap-2 px-3.5 py-3 sm:px-4 sm:py-2.5"
       >
-        <AvailabilityDot delayMs={900} />
+        <AvailabilityDot delayMs={500} />
         <DownFastLabel
           label={label}
           className="text-[13px] font-medium tracking-tight text-inherit sm:text-[13px]"

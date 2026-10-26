@@ -21,3 +21,15 @@ export const fade: Transition = {
 };
 
 export const none: Transition = { duration: 0 };
+
+/** Header chrome stagger: Disponible → lang → theme */
+export const HEADER_STAGGER = 0.2;
+
+export function headerEntranceTransition(delay: number): Transition {
+  return {
+    type: "spring",
+    stiffness: 400,
+    damping: 30,
+    delay,
+  };
+}

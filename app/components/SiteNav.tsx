@@ -5,10 +5,12 @@ import { useNavMode } from "@/app/components/dynamic-island/useNavMode";
 import { LanguageToggle } from "@/app/components/LanguageToggle";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { ISLAND_SLOT_ID } from "@/lib/constants/layout";
+import {
+  HEADER_STAGGER,
+  headerEntranceTransition,
+} from "@/lib/motion/transitions";
 import { cn } from "@/lib/utils";
 import { motion, useReducedMotion } from "motion/react";
-
-const DELAY = 0.2;
 
 function NavItem({
   children,
@@ -24,12 +26,7 @@ function NavItem({
       className={className}
       initial={{ opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{
-        type: "spring",
-        stiffness: 400,
-        damping: 30,
-        delay,
-      }}
+      transition={headerEntranceTransition(delay)}
     >
       {children}
     </motion.div>
@@ -65,10 +62,11 @@ export function SiteNav() {
           }
           aria-hidden={navMode}
         >
-          <NavItem delay={DELAY} className="inline-flex">
+          {/* Stagger after Disponible (delay 0): lang → theme */}
+          <NavItem delay={HEADER_STAGGER} className="inline-flex">
             <LanguageToggle />
           </NavItem>
-          <NavItem delay={DELAY * 2} className="inline-flex">
+          <NavItem delay={HEADER_STAGGER * 2} className="inline-flex">
             <AnimatedThemeToggler />
           </NavItem>
         </motion.div>

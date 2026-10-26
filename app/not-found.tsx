@@ -1,7 +1,6 @@
 "use client";
 
 import { DownFastLink } from "@/app/components/DownFastLink";
-import GlitchText from "@/components/GlitchText";
 import { dictionaries, localePath, type Locale } from "@/lib/i18n/dictionaries";
 import { usePathname } from "next/navigation";
 
@@ -17,30 +16,21 @@ export default function NotFound() {
   const t = dictionaries[locale];
 
   return (
-    <main className="flex min-h-[100svh] flex-col items-center justify-center px-6 sm:px-8">
-      <div className="flex flex-col items-center gap-6 text-center">
-        <GlitchText
-          mode="noise"
-          trigger="always"
-          speed={1}
-          intensity={0.2}
-          burstDuration={0.6}
-          offset={0}
-          skew={5}
-          flicker
-          fontWeight={600}
-          enableShadows={false}
-          shadowColors={["#ff0000", "#00ffff"]}
+    <main className="relative flex min-h-[100svh] flex-col items-center justify-center px-2.5 pb-2.5">
+      <div className="flex flex-col items-center gap-5 text-center sm:gap-6">
+        <p
+          aria-hidden
+          className="font-display text-[clamp(4.5rem,18vw,9rem)] leading-none font-bold tracking-tighter text-foreground"
         >
           404
-        </GlitchText>
-        <h1 className="text-md font-semibold tracking-tight text-foreground sm:text-xl">
+        </p>
+        <h1 className="text-base font-medium tracking-tight text-muted-foreground sm:text-lg">
           {t.notFound.title}
         </h1>
         <DownFastLink
           label={t.notFound.home}
           href={localePath(locale)}
-          className="text-sm text-foreground"
+          className="text-sm font-medium text-foreground"
         />
       </div>
     </main>

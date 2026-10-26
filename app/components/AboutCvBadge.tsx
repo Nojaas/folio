@@ -26,7 +26,7 @@ export function AboutCvBadge({ className }: { className?: string }) {
         fontSize={14}
         fontWeight={700}
         hoverTilt={20}
-        spinDuration={20}
+        spinDuration={30}
         ring={true}
         fill={true}
         onHover="speedUp"

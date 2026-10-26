@@ -1,7 +1,7 @@
 "use client";
 
 import { AboutSection } from "@/app/components/AboutSection";
-import { HeroMetallicTitle } from "@/app/components/HeroMetallicTitle";
+import { AnimatedTitle } from "@/app/components/AnimatedTitle";
 import { ScrollProgress } from "@/app/components/ScrollProgress";
 import { SiteNav } from "@/app/components/SiteNav";
 import { DATA } from "@/data/resume";
@@ -50,11 +50,9 @@ export default function HomePage() {
       <main className="relative z-10 flex min-h-[100svh] w-full max-w-[100vw] flex-col overflow-x-hidden pb-[max(5.5rem,env(safe-area-inset-bottom))] md:pb-0">
         <section
           id="home"
-          className="relative flex h-[100svh] flex-col justify-end px-2.5 pb-2 sm:pb-3"
+          className="relative flex h-[100svh] flex-col justify-end px-2.5 pb-2.5"
         >
-          <div className="w-full">
-            <HeroMetallicTitle name={DATA.name} />
-          </div>
+          <AnimatedTitle text={DATA.name} />
         </section>
 
         <AboutSection />

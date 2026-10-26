@@ -17,6 +17,7 @@ import { useSectionSpy } from "@/app/components/dynamic-island/useSectionSpy";
 import { useShellSize } from "@/app/components/dynamic-island/useShellSize";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { headerEntranceTransition } from "@/lib/motion/transitions";
 import { cn } from "@/lib/utils";
 import { useLenis } from "lenis/react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
@@ -29,12 +30,19 @@ export function DynamicIsland() {
   const { active, setActive, lock, unlock } = useSectionSpy();
   const navMode = useNavMode();
   const [ready, setReady] = useState(false);
+  /** Entrance spring only once — scroll back to available keeps the short fade. */
+  const [availableEntered, setAvailableEntered] = useState(false);
   const lenis = useLenis();
 
   useEffect(() => {
-    const id = window.setTimeout(() => setReady(true), 220);
-    return () => window.clearTimeout(id);
+    // Next frame — wait for island slot measure, without the old 220ms header lag.
+    const id = window.requestAnimationFrame(() => setReady(true));
+    return () => window.cancelAnimationFrame(id);
   }, []);
+
+  useEffect(() => {
+    if (reduceMotion) setAvailableEntered(true);
+  }, [reduceMotion]);
 
   const dockBottom = navMode && isMobile;
   const mode = !navMode ? "slot" : dockBottom ? "dock" : "center";
@@ -95,8 +103,12 @@ export function DynamicIsland() {
     contact: t.nav.contact,
   };
 
-  const move = reduceMotion ? none : spring;
   const contentFade = reduceMotion ? none : fade;
+
+  const positioned = ready && pos.left > 0;
+  const playEntrance = positioned && !availableEntered && !reduceMotion;
+  // Instant layout during entrance — otherwise left/x springs + y drop = diagonal.
+  const move = reduceMotion || playEntrance || !availableEntered ? none : spring;
 
   return (
     <motion.div
@@ -106,24 +118,32 @@ export function DynamicIsland() {
         top: pos.top,
         left: pos.left,
         x: pos.centered ? "-50%" : 0,
-        opacity: ready && pos.left > 0 ? 1 : 0,
       }}
       transition={{
         top: move,
         left: move,
         x: move,
-        opacity: reduceMotion
-          ? none
-          : { duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.08 },
       }}
     >
-      <div className="pointer-events-auto">
+      {/* Whole pill — pure vertical drop (opacity + y), same as lang/theme */}
+      <motion.div
+        className="pointer-events-auto"
+        initial={reduceMotion ? false : { opacity: 0, y: -12 }}
+        animate={{
+          opacity: positioned ? 1 : 0,
+          y: positioned || reduceMotion ? 0 : -12,
+        }}
+        transition={playEntrance ? headerEntranceTransition(0) : none}
+        onAnimationComplete={() => {
+          if (playEntrance) setAvailableEntered(true);
+        }}
+      >
         <IslandShell wide={dockBottom} size={size} reduceMotion={reduceMotion}>
           <div
             ref={measureRef}
             className={cn("relative", dockBottom ? "w-[90vw]" : "w-max")}
           >
-            <AnimatePresence initial={false} mode="popLayout">
+            <AnimatePresence mode="popLayout">
               {!navMode ? (
                 <AvailableContent
                   label={t.nav.available}
@@ -143,7 +163,7 @@ export function DynamicIsland() {
             </AnimatePresence>
           </div>
         </IslandShell>
-      </div>
+      </motion.div>
     </motion.div>
   );
 }
