@@ -158,7 +158,7 @@ export function DownFastLink({
       download={download || undefined}
       onClick={onClick}
       target={external ? "_blank" : undefined}
-      rel={external ? "noreferrer" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
       aria-label={ariaLabel ?? label}
       initial="rest"
       whileHover="hover"

@@ -1,5 +1,3 @@
-"use client";
-
 import { LanguageToggle } from "@/app/components/LanguageToggle";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 

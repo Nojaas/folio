@@ -1,5 +1,3 @@
-"use client";
-
 import { FooterOrbitMark } from "@/app/components/FooterOrbitMark";
 import { ContentRail } from "@/app/components/Section";
 

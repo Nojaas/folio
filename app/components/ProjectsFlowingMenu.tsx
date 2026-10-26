@@ -3,7 +3,6 @@
 import FlowingMenu, { type FlowingMenuItem } from "@/components/FlowingMenu";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { cn } from "@/lib/utils";
-import { useMemo } from "react";
 
 type Project = {
   id: string;
@@ -31,18 +30,14 @@ export function ProjectsFlowingMenu({
   "aria-label": ariaLabel = "Projects",
 }: ProjectsFlowingMenuProps) {
   const isMobile = useIsMobile();
-  const items: FlowingMenuItem[] = useMemo(
-    () =>
-      projects.map((project) => ({
-        text: project.title,
-        link: project.href,
-        meta: String(project.year),
-        marquee: project.title,
-        images: project.images,
-        description: project.description,
-      })),
-    [projects],
-  );
+  const items: FlowingMenuItem[] = projects.map((project) => ({
+    text: project.title,
+    link: project.href,
+    meta: String(project.year),
+    marquee: project.title,
+    images: project.images,
+    description: project.description,
+  }));
 
   return (
     <div
