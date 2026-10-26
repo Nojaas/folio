@@ -1,7 +1,14 @@
 import { ClarityAnalytics } from "@/app/components/ClarityAnalytics";
 import { ClickSparkProvider } from "@/app/components/ClickSparkProvider";
+import { PersonJsonLd } from "@/app/components/PersonJsonLd";
 import { SmoothScroll } from "@/app/components/SmoothScroll";
 import { ThemeProvider } from "@/app/components/ThemeProvider";
+import {
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TITLE,
+  SITE_URL,
+} from "@/lib/constants/site";
 import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -45,14 +52,36 @@ const fontSans = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://jason-leroy.com"),
-  title: "Jason Leroy · Fullstack Developer",
-  description: "Jason Leroy's portfolio",
+  metadataBase: new URL(SITE_URL),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
   alternates: {
+    canonical: "/",
     languages: {
       fr: "/",
       en: "/en",
     },
+  },
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    locale: "fr_FR",
+    alternateLocale: ["en_US"],
+  },
+  twitter: {
+    card: "summary",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -81,12 +110,8 @@ export default async function RootLayout({
         "min-h-screen bg-background font-sans antialiased",
       )}
     >
-      <head>
-        <link rel="preconnect" href="https://www.clarity.ms" />
-        <link rel="preconnect" href="https://scripts.clarity.ms" />
-        <link rel="dns-prefetch" href="https://h.clarity.ms" />
-      </head>
       <body>
+        <PersonJsonLd />
         <script
           dangerouslySetInnerHTML={{
             __html: `if("scrollRestoration"in history)history.scrollRestoration="manual";window.scrollTo(0,0);`,

@@ -262,15 +262,6 @@ body::-webkit-scrollbar {
   background: transparent;
 }
 
-@keyframes availability-appear {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 @keyframes availability-blink {
   0%,
   100% {
@@ -290,11 +281,12 @@ body::-webkit-scrollbar {
   }
 }
 
-/* Fade in from 0, then blink (blink starts after appear) */
+/*
+ * Blink only — appear is a CSS transition on the element (AvailabilityDot).
+ * (PSI: dual opacity animations on the same node are non-composited.)
+ */
 .animate-availability-dot {
-  animation:
-    availability-appear 0.5s ease-out forwards,
-    availability-blink 1s cubic-bezier(0.5, 0, 0, 1) 0.5s infinite;
+  animation: availability-blink 1s cubic-bezier(0.5, 0, 0, 1) 0.5s infinite;
 }
 
 /* Scroll item / footer line mask */

@@ -1220,6 +1220,9 @@ const LogoLoop = memo<LogoLoopProps>(
                   {item.node}
                 </span>
               ) : (
+                // Stack logos use SVG `node` items. next/image is a poor fit for
+                // arbitrary remote/srcSet logos duplicated across marquee copies.
+                // eslint-disable-next-line @next/next/no-img-element -- generic LogoItem.src path
                 <img
                   className={cx(
                     'pointer-events-none block h-[var(--logoloop-logoHeight)] w-auto object-contain [-webkit-user-drag:none] [image-rendering:-webkit-optimize-contrast]',
