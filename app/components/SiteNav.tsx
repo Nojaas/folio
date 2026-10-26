@@ -16,15 +16,17 @@ function NavItem({
   children,
   delay,
   className,
+  reduceMotion,
 }: {
   children: React.ReactNode;
   delay: number;
   className?: string;
+  reduceMotion: boolean | null;
 }) {
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: -12 }}
+      initial={reduceMotion ? false : { opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={headerEntranceTransition(delay)}
     >
@@ -63,10 +65,18 @@ export function SiteNav() {
           aria-hidden={navMode}
         >
           {/* Stagger after Disponible (delay 0): lang → theme */}
-          <NavItem delay={HEADER_STAGGER} className="inline-flex">
+          <NavItem
+            delay={HEADER_STAGGER}
+            reduceMotion={reduceMotion}
+            className="inline-flex"
+          >
             <LanguageToggle />
           </NavItem>
-          <NavItem delay={HEADER_STAGGER * 2} className="inline-flex">
+          <NavItem
+            delay={HEADER_STAGGER * 2}
+            reduceMotion={reduceMotion}
+            className="inline-flex"
+          >
             <AnimatedThemeToggler />
           </NavItem>
         </motion.div>

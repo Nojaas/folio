@@ -16,7 +16,6 @@ import { useSectionSpy } from "@/app/components/dynamic-island/useSectionSpy";
 import { useShellSize } from "@/app/components/dynamic-island/useShellSize";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import { headerEntranceTransition } from "@/lib/motion/transitions";
 import { cn } from "@/lib/utils";
 import { useLenis } from "lenis/react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
@@ -29,19 +28,12 @@ export function DynamicIsland() {
   const { active, setActive, lock, unlock } = useSectionSpy();
   const navMode = useNavMode();
   const [ready, setReady] = useState(false);
-  /** Entrance spring only once — scroll back to available keeps the short fade. */
-  const [availableEntered, setAvailableEntered] = useState(false);
   const lenis = useLenis();
 
   useEffect(() => {
-    // Next frame — wait for island slot measure, without the old 220ms header lag.
     const id = window.requestAnimationFrame(() => setReady(true));
     return () => window.cancelAnimationFrame(id);
   }, []);
-
-  useEffect(() => {
-    if (reduceMotion) setAvailableEntered(true);
-  }, [reduceMotion]);
 
   const dockBottom = navMode && isMobile;
   const mode = !navMode ? "slot" : dockBottom ? "dock" : "center";
@@ -79,7 +71,6 @@ export function DynamicIsland() {
         return;
       }
 
-      // Freeze spy on the clicked tab until scroll settles (safety timeout in lock).
       lock();
       if (lenis) {
         lenis.scrollTo(target, {
@@ -101,11 +92,8 @@ export function DynamicIsland() {
   };
 
   const contentFade = reduceMotion ? none : fade;
-
   const positioned = ready && pos.left > 0;
-  const playEntrance = positioned && !availableEntered && !reduceMotion;
-  // Instant layout during entrance — otherwise left/x springs + y drop = diagonal.
-  const move = reduceMotion || playEntrance || !availableEntered ? none : spring;
+  const move = reduceMotion || !positioned ? none : spring;
 
   return (
     <motion.div
@@ -122,19 +110,8 @@ export function DynamicIsland() {
         x: move,
       }}
     >
-      {/* Whole pill — pure vertical drop (opacity + y), same as lang/theme */}
-      <motion.div
-        className="pointer-events-auto"
-        initial={reduceMotion ? false : { opacity: 0, y: -12 }}
-        animate={{
-          opacity: positioned ? 1 : 0,
-          y: positioned || reduceMotion ? 0 : -12,
-        }}
-        transition={playEntrance ? headerEntranceTransition(0) : none}
-        onAnimationComplete={() => {
-          if (playEntrance) setAvailableEntered(true);
-        }}
-      >
+      {/* Disponible / pill: static for LCP — only the dot fades in. */}
+      <div className="pointer-events-auto">
         <IslandShell wide={dockBottom} size={size} reduceMotion={reduceMotion}>
           <div
             ref={measureRef}
@@ -160,7 +137,7 @@ export function DynamicIsland() {
             </AnimatePresence>
           </div>
         </IslandShell>
-      </motion.div>
+      </div>
     </motion.div>
   );
 }

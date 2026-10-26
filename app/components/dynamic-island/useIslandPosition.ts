@@ -41,9 +41,10 @@ function measure(mode: "slot" | "center" | "dock"): IslandPosition {
 export function useIslandPosition(
   mode: "slot" | "center" | "dock",
 ): IslandPosition {
+  // Match header padding so SSR / pre-measure paint isn't at left:0 (LCP flash).
   const [pos, setPos] = useState<IslandPosition>({
     top: 10,
-    left: 0,
+    left: 10,
     centered: false,
   });
 

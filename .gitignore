@@ -13,6 +13,8 @@
 # testing
 /coverage
 
+# lighthouse
+/.lighthouse
 # next.js
 /.next/
 /out/

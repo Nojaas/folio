@@ -31,7 +31,13 @@ export function middleware(request: NextRequest) {
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
-    PUBLIC_FILE.test(pathname)
+    PUBLIC_FILE.test(pathname) ||
+    // Metadata / OG routes live at the app root — do not locale-prefix them.
+    pathname.startsWith("/opengraph-image") ||
+    pathname.startsWith("/twitter-image") ||
+    pathname.startsWith("/icon") ||
+    pathname === "/robots.txt" ||
+    pathname === "/sitemap.xml"
   ) {
     return NextResponse.next();
   }

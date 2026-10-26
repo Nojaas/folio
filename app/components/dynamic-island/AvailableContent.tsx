@@ -17,7 +17,7 @@ export function AvailableContent({
   return (
     <motion.div
       key="available"
-      initial={reduceMotion ? false : { opacity: 0 }}
+      initial={false}
       animate={{ opacity: 1 }}
       exit={
         reduceMotion

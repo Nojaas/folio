@@ -2,6 +2,7 @@
 
 import { isSafariBrowser } from "@/lib/browser";
 import { MOBILE_MAX } from "@/lib/constants/layout";
+import { runAfterLcpIdle, shouldSkipStrands } from "@/lib/strands-gate";
 import { cn } from "@/lib/utils";
 import {
   motion,
@@ -31,24 +32,33 @@ const ENERGY_MOBILE_LIGHT = 0.08;
 const SCALE_MOBILE_STATIC = 0.48;
 
 /**
- * Fixed Strands behind the page:
- * Desktop: scroll-linked zoom / energy / magnetic cursor.
- * Mobile: glass + fixed energy; scroll scale except on Safari (stutter).
+ * Fixed Strands behind the page (rule B):
+ * - Skip: reduced-motion / Save-Data / 2g / weak device
+ * - Else: mount only after LCP + requestIdleCallback (mobile + desktop)
  */
 export function ScrollStrandsBackground() {
   const reducedMotion = useReducedMotion();
+  const [ready, setReady] = useState(false);
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
 
   useEffect(() => {
+    if (reducedMotion || shouldSkipStrands()) return;
+
     const mq = window.matchMedia(`(max-width: ${MOBILE_MAX}px)`);
-    const sync = () => setIsMobile(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
+    const syncMobile = () => setIsMobile(mq.matches);
+    syncMobile();
+    mq.addEventListener("change", syncMobile);
+
+    const stop = runAfterLcpIdle(() => setReady(true));
+
+    return () => {
+      mq.removeEventListener("change", syncMobile);
+      stop();
+    };
+  }, [reducedMotion]);
 
   if (reducedMotion) return null;
-  if (isMobile === null) return null;
+  if (!ready || isMobile === null) return null;
   if (isMobile) return <ScrollStrandsMobile />;
   return <ScrollStrandsDesktop />;
 }
@@ -80,7 +90,7 @@ function ScrollStrandsMobileShell({
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 1.2 }}
+      transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
     >
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <motion.div
@@ -185,7 +195,7 @@ function ScrollStrandsDesktop() {
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 1.2 }}
+      transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
     >
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <motion.div style={{ y: scrollY }}>
