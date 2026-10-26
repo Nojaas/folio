@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { motion, useReducedMotion } from "motion/react";
 import { useLayoutEffect, useRef, useState, type MouseEvent } from "react";
 
-export type PillTabItem<T extends string = string> = {
+type PillTabItem<T extends string = string> = {
   id: T;
   label: string;
 };

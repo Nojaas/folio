@@ -25,7 +25,7 @@ export interface FlowingMenuItem {
   description?: string;
 }
 
-export interface FlowingMenuProps {
+interface FlowingMenuProps {
   items?: FlowingMenuItem[];
   speed?: number;
   direction?: "left" | "right" | "alternate";

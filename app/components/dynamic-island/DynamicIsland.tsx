@@ -7,7 +7,6 @@ import {
   spring,
   type SectionId,
 } from "@/app/components/dynamic-island/constants";
-import { emitSectionArrived } from "@/app/components/dynamic-island/events";
 import { IslandShell } from "@/app/components/dynamic-island/IslandShell";
 import { NavContent } from "@/app/components/dynamic-island/NavContent";
 import { getSectionScrollTarget } from "@/app/components/dynamic-island/scroll";
@@ -67,8 +66,6 @@ export function DynamicIsland() {
       e.stopPropagation();
       setActive(id);
       history.replaceState(null, "", `#${id}`);
-      // Start reveal autoplay with the scroll — avoids a pause at scroll end
-      emitSectionArrived(id);
 
       const target = getSectionScrollTarget(id, lenis);
       if (target == null) {

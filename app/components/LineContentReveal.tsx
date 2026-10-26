@@ -25,7 +25,7 @@ const SPEEDS = {
   },
 } as const;
 
-export type LineContentRevealSpeed = keyof typeof SPEEDS;
+type LineContentRevealSpeed = keyof typeof SPEEDS;
 
 const LINE = "h-px w-full origin-left bg-foreground/10";
 

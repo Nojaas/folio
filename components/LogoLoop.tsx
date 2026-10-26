@@ -22,7 +22,7 @@ export type LogoItem =
       hoverColor?: string;
     };
 
-export interface LogoLoopProps {
+interface LogoLoopProps {
   logos: LogoItem[];
   speed?: number;
   direction?: 'left' | 'right' | 'up' | 'down';
@@ -1069,7 +1069,7 @@ const createEngine = (
   return { refresh, wake, destroy, state: st };
 };
 
-export const LogoLoop = memo<LogoLoopProps>(
+const LogoLoop = memo<LogoLoopProps>(
   ({
     logos,
     speed = 120,

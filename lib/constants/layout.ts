@@ -1,5 +1,5 @@
 /** Matches Tailwind `md` — below = mobile, md+ = tablet/desktop */
-export const BREAKPOINTS = {
+const BREAKPOINTS = {
   md: 768,
 } as const;
 
