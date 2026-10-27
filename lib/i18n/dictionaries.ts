@@ -60,7 +60,8 @@ export type Dictionary = {
   };
   availability: {
     label: string;
-    title: string;
+    titleLine1: string;
+    titleLine2: string;
     status: { label: string; badge: string; detail: string };
     location: { label: string; primary: string; detail: string };
     engagement: { label: string; primary: string; detail: string };
@@ -122,8 +123,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
       cv: "CV (PDF)",
     },
     availability: {
-      label: "Disponibilités",
-      title: "Disponibilités.",
+      label: "Travaillons ensemble",
+      titleLine1: "Travaillons",
+      titleLine2: "ensemble.",
       status: {
         label: "Statut",
         badge: "Disponible",
@@ -206,8 +208,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
       cv: "Resume (PDF)",
     },
     availability: {
-      label: "Availability",
-      title: "Availability.",
+      label: "Let's work together",
+      titleLine1: "Let's work",
+      titleLine2: "together.",
       status: {
         label: "Status",
         badge: "Available",

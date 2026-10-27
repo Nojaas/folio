@@ -33,7 +33,10 @@ export function AvailabilitySection() {
         key={`availability-title-${locale}`}
         className="px-2.5 text-4xl font-bold tracking-tighter text-foreground sm:text-5xl"
       >
-        <h2>{copy.title}</h2>
+        <h2>
+          {copy.titleLine1} <br />
+          {copy.titleLine2}
+        </h2>
       </SectionTitleReveal>
 
       <ContentRail>
