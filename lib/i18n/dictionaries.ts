@@ -96,7 +96,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     },
     about: {
       title: "À propos.",
-      lead: "Développeur fullstack créatif.",
+      lead: "Développeur full-stack créatif.",
       p1: "Je développe aujourd'hui principalement en React et TypeScript, avec un vrai back NodeJS. J'ai travaillé sur des back-offices, des SaaS et des applications métier, avec une approche full-stack qui va de l'interface jusqu'à la mise en production.",
       p2: "Je ne me contente pas d'exécuter une demande. J'aime comprendre le besoin derrière une fonctionnalité pour faire des choix techniques et UI qui ont du sens.",
       p3Available: "Disponible",
