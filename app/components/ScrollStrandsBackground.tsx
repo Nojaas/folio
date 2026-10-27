@@ -16,7 +16,7 @@ import {
 } from "motion/react";
 import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const Strands = dynamic(() => import("@/components/Strands"), { ssr: false });
 
@@ -30,18 +30,23 @@ const ENERGY_MOBILE_DARK = 0.32;
 const ENERGY_MOBILE_LIGHT = 0.08;
 /** Static scale when Safari disables scroll-zoom (avoids compositor stutter) */
 const SCALE_MOBILE_STATIC = 0.48;
+/**
+ * Mobile canvas DPR cap — bump down to `1` if PSI/TBT regresses on mid-tier phones.
+ */
+const STRANDS_MOBILE_MAX_DPR = 1.5;
 
 /**
  * Fixed Strands behind the page (rule B):
- * - Skip: kill switch (`?strands=off` / NEXT_PUBLIC_STRANDS), reduced-motion,
- *   webdriver, soft-GL (SwiftShader…), slow GL, Save-Data, 2g, weak device
- * - Else: mount only after LCP + requestIdleCallback (mobile + desktop)
+ * - Skip: kill switch, reduced-motion, webdriver, soft-GL, slow GL, Save-Data, 2g
+ * - Dev: `?strands=force` bypasses webdriver + GL probe (LH profiling)
+ * - Else: mount only after LCP + requestIdleCallback; tear down on jank median
  */
 export function ScrollStrandsBackground() {
   const reducedMotion = useReducedMotion();
   const [ready, setReady] = useState(false);
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const [skipped, setSkipped] = useState(false);
+  const [janked, setJanked] = useState(false);
 
   useEffect(() => {
     if (reducedMotion || shouldSkipStrands()) {
@@ -62,10 +67,21 @@ export function ScrollStrandsBackground() {
     };
   }, [reducedMotion]);
 
+  const onJank = useCallback(() => setJanked(true), []);
+
+  useEffect(() => {
+    if (!janked) return;
+    const id = window.setTimeout(() => setSkipped(true), 500);
+    return () => window.clearTimeout(id);
+  }, [janked]);
+
   if (reducedMotion || skipped) return null;
   if (!ready || isMobile === null) return null;
-  if (isMobile) return <ScrollStrandsMobile />;
-  return <ScrollStrandsDesktop />;
+
+  if (isMobile) {
+    return <ScrollStrandsMobile onJank={onJank} fading={janked} />;
+  }
+  return <ScrollStrandsDesktop onJank={onJank} fading={janked} />;
 }
 
 function useThemeLight() {
@@ -75,27 +91,42 @@ function useThemeLight() {
   return mounted && resolvedTheme === "light";
 }
 
-function ScrollStrandsMobile() {
+function ScrollStrandsMobile({
+  onJank,
+  fading,
+}: {
+  onJank: () => void;
+  fading: boolean;
+}) {
   const [safari] = useState(isSafariBrowser);
   // Safari: no useScroll — static scale only (scroll-linked scale stuttered).
-  if (safari) return <ScrollStrandsMobileStatic />;
-  return <ScrollStrandsMobileScaled />;
+  if (safari) {
+    return <ScrollStrandsMobileStatic onJank={onJank} fading={fading} />;
+  }
+  return <ScrollStrandsMobileScaled onJank={onJank} fading={fading} />;
 }
 
 function ScrollStrandsMobileShell({
   scale,
   isLight,
+  onJank,
+  fading,
 }: {
   scale: number | MotionValue<number>;
   isLight: boolean;
+  onJank: () => void;
+  fading: boolean;
 }) {
   return (
     <motion.div
       aria-hidden
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+      animate={{ opacity: fading ? 0 : 1 }}
+      transition={{
+        duration: fading ? 0.45 : 1.1,
+        ease: [0.22, 1, 0.36, 1],
+      }}
     >
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <motion.div
@@ -112,8 +143,9 @@ function ScrollStrandsMobileShell({
             interactive={false}
             clickPulse={false}
             globalPointer={false}
-            maxDevicePixelRatio={1}
+            maxDevicePixelRatio={STRANDS_MOBILE_MAX_DPR}
             intro
+            onJank={onJank}
           />
         </motion.div>
       </div>
@@ -121,21 +153,51 @@ function ScrollStrandsMobileShell({
   );
 }
 
-function ScrollStrandsMobileStatic() {
+function ScrollStrandsMobileStatic({
+  onJank,
+  fading,
+}: {
+  onJank: () => void;
+  fading: boolean;
+}) {
   const isLight = useThemeLight();
   return (
-    <ScrollStrandsMobileShell scale={SCALE_MOBILE_STATIC} isLight={isLight} />
+    <ScrollStrandsMobileShell
+      scale={SCALE_MOBILE_STATIC}
+      isLight={isLight}
+      onJank={onJank}
+      fading={fading}
+    />
   );
 }
 
-function ScrollStrandsMobileScaled() {
+function ScrollStrandsMobileScaled({
+  onJank,
+  fading,
+}: {
+  onJank: () => void;
+  fading: boolean;
+}) {
   const isLight = useThemeLight();
   const { scrollYProgress } = useScroll();
   const scrollScale = useTransform(scrollYProgress, [0, 1], [0.36, 0.88]);
-  return <ScrollStrandsMobileShell scale={scrollScale} isLight={isLight} />;
+  return (
+    <ScrollStrandsMobileShell
+      scale={scrollScale}
+      isLight={isLight}
+      onJank={onJank}
+      fading={fading}
+    />
+  );
 }
 
-function ScrollStrandsDesktop() {
+function ScrollStrandsDesktop({
+  onJank,
+  fading,
+}: {
+  onJank: () => void;
+  fading: boolean;
+}) {
   const isLight = useThemeLight();
   const energyCalm = isLight ? ENERGY_CALM_LIGHT : ENERGY_CALM_DARK;
   const { scrollYProgress } = useScroll();
@@ -199,8 +261,11 @@ function ScrollStrandsDesktop() {
       aria-hidden
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+      animate={{ opacity: fading ? 0 : 1 }}
+      transition={{
+        duration: fading ? 0.45 : 1.1,
+        ease: [0.22, 1, 0.36, 1],
+      }}
     >
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <motion.div style={{ y: scrollY }}>
@@ -221,6 +286,7 @@ function ScrollStrandsDesktop() {
               lightMode={isLight}
               globalPointer
               intro
+              onJank={onJank}
             />
           </motion.div>
         </motion.div>

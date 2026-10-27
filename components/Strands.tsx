@@ -32,6 +32,8 @@ export interface StrandsProps {
   intro?: boolean;
   lightMode?: boolean;
   maxDevicePixelRatio?: number;
+  /** Fired once if median frame time (after warm-up) exceeds the jank threshold. */
+  onJank?: () => void;
   className?: string;
   style?: CSSProperties;
 }
@@ -65,6 +67,23 @@ interface StrandsConfig {
   intro: boolean;
   lightMode: boolean;
   maxDevicePixelRatio: number;
+  onJank?: () => void;
+}
+
+/** Skip first N frames (shader/texture warm-up) before sampling. */
+const JANK_WARMUP_FRAMES = 10;
+/** Sample window after warm-up. */
+const JANK_SAMPLE_FRAMES = 30;
+/** Tear down if median frame time exceeds this (ms). */
+const JANK_MEDIAN_MS = 40;
+
+function median(values: number[]) {
+  if (values.length === 0) return 0;
+  const sorted = values.slice().sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 0
+    ? (sorted[mid - 1] + sorted[mid]) / 2
+    : sorted[mid];
 }
 
 const MAX_COLORS = 8;
@@ -425,6 +444,7 @@ export default function Strands({
   intro = true,
   lightMode = false,
   maxDevicePixelRatio = 2,
+  onJank,
   className = "",
   style,
 }: StrandsProps) {
@@ -459,6 +479,7 @@ export default function Strands({
     intro,
     lightMode,
     maxDevicePixelRatio,
+    onJank,
   };
 
   useEffect(() => {
@@ -559,6 +580,10 @@ export default function Strands({
       speechT: 0,
       paletteKey: "",
       palette: { flat: new Float32Array(MAX_COLORS * 3), count: 1 },
+      jankWarmup: JANK_WARMUP_FRAMES,
+      jankSamples: [] as number[],
+      jankDone: false,
+      janked: false,
     };
 
     const resize = () => {
@@ -641,9 +666,34 @@ export default function Strands({
 
     const frame = (now: number) => {
       st.raf = 0;
+      if (st.janked) return;
       const p = propsRef.current;
-      const dt = st.last ? clamp((now - st.last) / 1000, 0, 0.05) : 0;
+      const frameMs = st.last ? now - st.last : 0;
+      const dt = st.last ? clamp(frameMs / 1000, 0, 0.05) : 0;
       st.last = now;
+
+      // Warm-up then median of N frames — tear down on soft/slow GPU.
+      if (!st.jankDone && frameMs > 0) {
+        if (st.jankWarmup > 0) {
+          st.jankWarmup -= 1;
+        } else {
+          st.jankSamples.push(frameMs);
+          if (st.jankSamples.length >= JANK_SAMPLE_FRAMES) {
+            st.jankDone = true;
+            const med = median(st.jankSamples);
+            if (med > JANK_MEDIAN_MS) {
+              st.janked = true;
+              if (st.raf) {
+                cancelAnimationFrame(st.raf);
+                st.raf = 0;
+              }
+              p.onJank?.();
+              return;
+            }
+          }
+        }
+      }
+
       const reduced = !!query?.matches;
       if (st.introStart < 0 && st.visible) st.introStart = now;
       if (p.intro && !reduced && st.introStart >= 0) {
@@ -702,6 +752,7 @@ export default function Strands({
     };
 
     const wake = () => {
+      if (st.janked) return;
       if (!st.raf && st.visible && !document.hidden && !st.lost) {
         st.last = 0;
         st.raf = requestAnimationFrame(frame);

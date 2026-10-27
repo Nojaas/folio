@@ -9,6 +9,10 @@ type AvailabilityDotProps = {
   delayMs?: number;
 };
 
+/**
+ * Appear (opacity transition) and blink (keyframes) must live on separate
+ * nodes — PSI flags dual opacity animations on the same element as non-composited.
+ */
 export function AvailabilityDot({
   className,
   delayMs = 1500,
@@ -24,10 +28,17 @@ export function AvailabilityDot({
     <span
       aria-hidden
       className={cn(
-        "size-1.5 rounded-full bg-current transition-opacity duration-500 ease-out",
-        ready ? "animate-availability-dot opacity-100" : "opacity-0",
+        "inline-flex size-1.5 transition-opacity duration-500 ease-out",
+        ready ? "opacity-100" : "opacity-0",
         className,
       )}
-    />
+    >
+      <span
+        className={cn(
+          "size-full rounded-full bg-current",
+          ready && "animate-availability-dot",
+        )}
+      />
+    </span>
   );
 }

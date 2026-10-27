@@ -282,8 +282,8 @@ body::-webkit-scrollbar {
 }
 
 /*
- * Blink only — appear is a CSS transition on the element (AvailabilityDot).
- * (PSI: dual opacity animations on the same node are non-composited.)
+ * Blink only on the inner span — appear is a CSS transition on the parent
+ * (AvailabilityDot). Same-node opacity transition + blink = non-composited (PSI).
  */
 .animate-availability-dot {
   animation: availability-blink 1s cubic-bezier(0.5, 0, 0, 1) 0.5s infinite;
