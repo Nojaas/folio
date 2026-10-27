@@ -1,4 +1,3 @@
-import { ClarityAnalytics } from "@/app/components/ClarityAnalytics";
 import { ClickSparkProvider } from "@/app/components/ClickSparkProvider";
 import { PersonJsonLd } from "@/app/components/PersonJsonLd";
 import { SmoothScroll } from "@/app/components/SmoothScroll";
@@ -133,7 +132,6 @@ export default async function RootLayout({
             </ClickSparkProvider>
             <Analytics />
             <SpeedInsights />
-            <ClarityAnalytics />
           </SmoothScroll>
         </ThemeProvider>
       </body>
