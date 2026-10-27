@@ -5,7 +5,13 @@ import { MOBILE_MAX } from "@/lib/constants/layout";
 import { ReactLenis, useLenis } from "lenis/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,14 +20,34 @@ ScrollTrigger.config({ ignoreMobileResize: true });
 // Keep scrub in sync after background tabs / long frames (Lenis + GSAP).
 gsap.ticker.lagSmoothing(0);
 
+/** True when Lenis rAF/smoothWheel are off — consumers must use window scroll. */
+const NativeScrollContext = createContext(true);
+
+export function useNativeScroll() {
+  return useContext(NativeScrollContext);
+}
+
+/**
+ * Touch / small viewports: native scroll (Lenis autoRaf off — no rAF).
+ * Desktop fine pointer: Lenis smooth wheel.
+ *
+ * Always keep the same ReactLenis → children tree so FlowingMenu (and friends)
+ * are not remounted when we flip native ↔ Lenis after mount.
+ */
 function usePreferNativeScroll() {
   const [native, setNative] = useState(true);
 
   useEffect(() => {
-    const coarse = window.matchMedia("(pointer: coarse)").matches;
-    const mobile = window.matchMedia(`(max-width: ${MOBILE_MAX}px)`).matches;
-    // Touch / small viewports: native scroll only — no Lenis instance or rAF.
-    setNative(coarse || mobile);
+    const coarse = window.matchMedia("(pointer: coarse)");
+    const mobile = window.matchMedia(`(max-width: ${MOBILE_MAX}px)`);
+    const sync = () => setNative(coarse.matches || mobile.matches);
+    sync();
+    coarse.addEventListener("change", sync);
+    mobile.addEventListener("change", sync);
+    return () => {
+      coarse.removeEventListener("change", sync);
+      mobile.removeEventListener("change", sync);
+    };
   }, []);
 
   return native;
@@ -99,37 +125,37 @@ function LenisScrollTriggerSync() {
 
 /**
  * Desktop (fine pointer, md+): Lenis smooth wheel.
- * Touch / mobile: native scroll — Lenis never mounts (island uses window.scrollTo).
+ * Touch / mobile: native scroll feel — Lenis stays mounted with autoRaf off
+ * so the page tree (FlowingMenu hover, intro IO, etc.) never remounts.
  */
 export function SmoothScroll({ children }: { children: ReactNode }) {
   const native = usePreferNativeScroll();
 
-  if (native) {
-    return (
-      <>
-        <NativeScrollSetup />
-        {children}
-      </>
-    );
-  }
-
   return (
-    <ReactLenis
-      root
-      options={{
-        autoRaf: true,
-        lerp: 0.12,
-        wheelMultiplier: 0.8,
-        syncTouch: false,
-        touchMultiplier: 1,
-        overscroll: false,
-        smoothWheel: true,
-        anchors: false,
-      }}
-    >
-      <ScrollToTopOnLoad />
-      <LenisScrollTriggerSync />
-      {children}
-    </ReactLenis>
+    <NativeScrollContext.Provider value={native}>
+      <ReactLenis
+        root
+        options={{
+          autoRaf: !native,
+          lerp: 0.12,
+          wheelMultiplier: 0.8,
+          syncTouch: false,
+          touchMultiplier: 1,
+          overscroll: false,
+          smoothWheel: !native,
+          anchors: false,
+        }}
+      >
+        {native ? (
+          <NativeScrollSetup />
+        ) : (
+          <>
+            <ScrollToTopOnLoad />
+            <LenisScrollTriggerSync />
+          </>
+        )}
+        {children}
+      </ReactLenis>
+    </NativeScrollContext.Provider>
   );
 }

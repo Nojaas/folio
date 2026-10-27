@@ -3,11 +3,104 @@ type NetworkInformation = {
   effectiveType?: string;
 };
 
+type DebugRendererInfo = {
+  UNMASKED_RENDERER_WEBGL: number;
+  UNMASKED_VENDOR_WEBGL: number;
+};
+
+const SOFT_GL_RE =
+  /swiftshader|llvmpipe|softpipe|software|microsoft basic render|apple software/i;
+/** Skip if creating a WebGL context takes longer than this (ms). */
+const SLOW_GL_MS = 50;
+
+let cachedProbeSkip: boolean | null = null;
+
+/**
+ * Opt-out for A/B measures — off by default.
+ * - `?strands=off` | `0` | `false`
+ * - `NEXT_PUBLIC_STRANDS=0` | `off`
+ */
+export function isStrandsKillSwitch(): boolean {
+  if (
+    process.env.NEXT_PUBLIC_STRANDS === "0" ||
+    process.env.NEXT_PUBLIC_STRANDS === "off"
+  ) {
+    return true;
+  }
+  if (typeof window === "undefined") return false;
+  try {
+    const q = new URLSearchParams(window.location.search).get("strands");
+    return q === "0" || q === "off" || q === "false";
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * One-shot probe: software GL (SwiftShader etc.), missing GL, or slow context.
+ * Result is cached for the page lifetime.
+ */
+function probeBadWebGL(): boolean {
+  if (cachedProbeSkip != null) return cachedProbeSkip;
+
+  try {
+    const canvas = document.createElement("canvas");
+    const t0 = performance.now();
+    const gl = canvas.getContext("webgl", {
+      alpha: true,
+      antialias: false,
+      depth: false,
+      stencil: false,
+      powerPreference: "low-power",
+    }) as WebGLRenderingContext | null;
+    const dt = performance.now() - t0;
+
+    if (!gl) {
+      cachedProbeSkip = true;
+      return true;
+    }
+
+    if (dt > SLOW_GL_MS) {
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
+      cachedProbeSkip = true;
+      return true;
+    }
+
+    const ext = gl.getExtension(
+      "WEBGL_debug_renderer_info",
+    ) as DebugRendererInfo | null;
+    if (ext) {
+      const renderer = String(
+        gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) ?? "",
+      );
+      const vendor = String(gl.getParameter(ext.UNMASKED_VENDOR_WEBGL) ?? "");
+      if (SOFT_GL_RE.test(`${vendor} ${renderer}`)) {
+        gl.getExtension("WEBGL_lose_context")?.loseContext();
+        cachedProbeSkip = true;
+        return true;
+      }
+    }
+
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
+    cachedProbeSkip = false;
+    return false;
+  } catch {
+    cachedProbeSkip = true;
+    return true;
+  }
+}
+
 /** Hard skip — never mount WebGL Strands. */
 export function shouldSkipStrands(): boolean {
   if (typeof window === "undefined") return true;
 
+  if (isStrandsKillSwitch()) return true;
+
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return true;
+  }
+
+  if (typeof navigator !== "undefined" && navigator.webdriver) {
     return true;
   }
 
@@ -27,6 +120,8 @@ export function shouldSkipStrands(): boolean {
     .deviceMemory;
   // Weak devices: few cores and low/unknown memory.
   if (cores <= 4 && (memory === undefined || memory <= 4)) return true;
+
+  if (probeBadWebGL()) return true;
 
   return false;
 }

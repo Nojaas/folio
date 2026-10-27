@@ -33,16 +33,21 @@ const SCALE_MOBILE_STATIC = 0.48;
 
 /**
  * Fixed Strands behind the page (rule B):
- * - Skip: reduced-motion / Save-Data / 2g / weak device
+ * - Skip: kill switch (`?strands=off` / NEXT_PUBLIC_STRANDS), reduced-motion,
+ *   webdriver, soft-GL (SwiftShader…), slow GL, Save-Data, 2g, weak device
  * - Else: mount only after LCP + requestIdleCallback (mobile + desktop)
  */
 export function ScrollStrandsBackground() {
   const reducedMotion = useReducedMotion();
   const [ready, setReady] = useState(false);
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
+  const [skipped, setSkipped] = useState(false);
 
   useEffect(() => {
-    if (reducedMotion || shouldSkipStrands()) return;
+    if (reducedMotion || shouldSkipStrands()) {
+      setSkipped(true);
+      return;
+    }
 
     const mq = window.matchMedia(`(max-width: ${MOBILE_MAX}px)`);
     const syncMobile = () => setIsMobile(mq.matches);
@@ -57,7 +62,7 @@ export function ScrollStrandsBackground() {
     };
   }, [reducedMotion]);
 
-  if (reducedMotion) return null;
+  if (reducedMotion || skipped) return null;
   if (!ready || isMobile === null) return null;
   if (isMobile) return <ScrollStrandsMobile />;
   return <ScrollStrandsDesktop />;

@@ -694,8 +694,15 @@ export default function Strands({
         st.raf = requestAnimationFrame(frame);
     };
 
+    const sleep = () => {
+      if (st.raf) {
+        cancelAnimationFrame(st.raf);
+        st.raf = 0;
+      }
+    };
+
     const wake = () => {
-      if (!st.raf && st.visible && !st.lost) {
+      if (!st.raf && st.visible && !document.hidden && !st.lost) {
         st.last = 0;
         st.raf = requestAnimationFrame(frame);
       }
@@ -784,11 +791,13 @@ export default function Strands({
       intersection = new IntersectionObserver((entries) => {
         st.visible = entries[entries.length - 1].isIntersecting;
         if (st.visible) wake();
+        else sleep();
       });
       intersection.observe(container);
     }
     const onVisibility = () => {
-      if (!document.hidden) wake();
+      if (document.hidden) sleep();
+      else wake();
     };
     document.addEventListener("visibilitychange", onVisibility);
     wake();

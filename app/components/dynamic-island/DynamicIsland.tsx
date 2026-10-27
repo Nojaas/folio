@@ -14,6 +14,7 @@ import { useIslandPosition } from "@/app/components/dynamic-island/useIslandPosi
 import { useNavMode } from "@/app/components/dynamic-island/useNavMode";
 import { useSectionSpy } from "@/app/components/dynamic-island/useSectionSpy";
 import { useShellSize } from "@/app/components/dynamic-island/useShellSize";
+import { useNativeScroll } from "@/app/components/SmoothScroll";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { cn } from "@/lib/utils";
@@ -28,7 +29,10 @@ export function DynamicIsland() {
   const { active, setActive, lock, unlock } = useSectionSpy();
   const navMode = useNavMode();
   const [ready, setReady] = useState(false);
+  const nativeScroll = useNativeScroll();
+  // Lenis stays mounted on touch (autoRaf off) — ignore it and use window scroll.
   const lenis = useLenis();
+  const smooth = nativeScroll ? undefined : lenis;
 
   useEffect(() => {
     const id = window.requestAnimationFrame(() => setReady(true));
@@ -59,30 +63,31 @@ export function DynamicIsland() {
       setActive(id);
       history.replaceState(null, "", `#${id}`);
 
-      const target = getSectionScrollTarget(id, lenis);
+      const target = getSectionScrollTarget(id, smooth);
       if (target == null) {
         unlock();
         return;
       }
 
-      const current = lenis?.scroll ?? window.scrollY;
+      const current = smooth?.scroll ?? window.scrollY;
       if (Math.abs(current - target) < 4) {
         unlock();
         return;
       }
 
       lock();
-      if (lenis) {
-        lenis.scrollTo(target, {
+      if (smooth) {
+        smooth.scrollTo(target, {
           duration: 1.3,
           offset: 0,
           onComplete: unlock,
         });
       } else {
         window.scrollTo({ top: target, behavior: "smooth" });
+        window.setTimeout(unlock, 500);
       }
     },
-    [lenis, setActive, lock, unlock],
+    [smooth, setActive, lock, unlock],
   );
 
   const labels: Record<SectionId, string> = {
