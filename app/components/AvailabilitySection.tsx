@@ -6,6 +6,7 @@ import { LineContentReveal } from "@/app/components/LineContentReveal";
 import { PillTabs } from "@/app/components/PillTabs";
 import { ContentRail, Section } from "@/app/components/Section";
 import { SectionTitleReveal } from "@/app/components/SectionTitleReveal";
+import { useNativeScroll } from "@/app/components/SmoothScroll";
 import { DATA } from "@/data/resume";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
@@ -116,7 +117,10 @@ export function AvailabilitySection() {
   const copy = t.availability;
   const isMobile = useIsMobile();
   const reduceMotion = useReducedMotion();
+  const nativeScroll = useNativeScroll();
+  // Lenis stays mounted on touch (autoRaf off) — ignore it and use window scroll.
   const lenis = useLenis();
+  const smooth = nativeScroll ? undefined : lenis;
   const parisTime = useParisClock(locale);
 
   const [mode, setMode] = useState<EngagementMode>("freelance");
@@ -136,15 +140,15 @@ export function AvailabilitySection() {
     (e: MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault();
       history.replaceState(null, "", "#projects");
-      const target = getSectionScrollTarget("projects", lenis);
+      const target = getSectionScrollTarget("projects", smooth);
       if (target == null) return;
-      if (lenis) {
-        lenis.scrollTo(target, { duration: 1.3, offset: 0 });
+      if (smooth) {
+        smooth.scrollTo(target, { duration: 1.3, offset: 0 });
       } else {
         window.scrollTo({ top: target, behavior: "smooth" });
       }
     },
-    [lenis],
+    [smooth],
   );
 
   return (
