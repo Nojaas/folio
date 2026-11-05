@@ -62,9 +62,27 @@ export type Dictionary = {
     label: string;
     titleLine1: string;
     titleLine2: string;
-    status: { label: string; badge: string; detail: string };
-    location: { label: string; primary: string; detail: string };
-    engagement: { label: string; primary: string; detail: string };
+    status: {
+      badge: string;
+    };
+    /** `{time}` → HH:MM Europe/Paris */
+    liveTime: string;
+    responseSla: string;
+    modesLabel: string;
+    modes: {
+      freelance: string;
+      cdi: string;
+    };
+    panels: {
+      freelance: readonly { label: string; value: string }[];
+      cdi: readonly { label: string; value: string }[];
+    };
+    cta: {
+      primary: string;
+      secondary: string;
+      subjectFreelance: string;
+      subjectCdi: string;
+    };
   };
   footer: {
     orbitRing: string;
@@ -127,19 +145,34 @@ export const dictionaries: Record<Locale, Dictionary> = {
       titleLine1: "Travaillons",
       titleLine2: "ensemble.",
       status: {
-        label: "Statut",
         badge: "Disponible",
-        detail: "Freelance & opportunités CDI · Ouvert aux échanges",
       },
-      location: {
-        label: "Modalités",
-        primary: "Full remote / Hybride",
-        detail: "Paris & Île-de-France",
+      liveTime: "Il est {time} à Paris",
+      responseSla: "Réponse sous 24h",
+      modesLabel: "Type d'engagement",
+      modes: {
+        freelance: "Freelance",
+        cdi: "CDI",
       },
-      engagement: {
-        label: "Engagement",
-        primary: "À partir de 380€/j",
-        detail: "Missions freelance · CDI frame",
+      panels: {
+        freelance: [
+          { label: "Tarif", value: "À partir de 380€/j" },
+          { label: "Mode", value: "Full remote ou hybride" },
+          { label: "Zone", value: "Paris & Île-de-France" },
+          { label: "Type", value: "Missions courtes ou longues" },
+        ],
+        cdi: [
+          { label: "Contrat", value: "CDI ou CDI frame" },
+          { label: "Mode", value: "Remote / hybride" },
+          { label: "Zone", value: "Paris & Île-de-France" },
+          { label: "Démarrage", value: "Selon préavis" },
+        ],
+      },
+      cta: {
+        primary: "Démarrer un projet",
+        secondary: "ou voir mes projets",
+        subjectFreelance: "Mission freelance",
+        subjectCdi: "Opportunité CDI",
       },
     },
     footer: {
@@ -212,19 +245,34 @@ export const dictionaries: Record<Locale, Dictionary> = {
       titleLine1: "Let's work",
       titleLine2: "together.",
       status: {
-        label: "Status",
         badge: "Available",
-        detail: "Freelance & full-time opportunities · Open to opportunities",
       },
-      location: {
-        label: "Setup",
-        primary: "Full remote / Hybrid",
-        detail: "Paris & Île-de-France",
+      liveTime: "It's {time} in Paris",
+      responseSla: "Reply within 24h",
+      modesLabel: "Engagement type",
+      modes: {
+        freelance: "Freelance",
+        cdi: "Full-time",
       },
-      engagement: {
-        label: "Engagement",
-        primary: "From €380/day",
-        detail: "Freelance missions · Permanent roles",
+      panels: {
+        freelance: [
+          { label: "Rate", value: "From €380/day" },
+          { label: "Setup", value: "Full remote or hybrid" },
+          { label: "Area", value: "Paris & Île-de-France" },
+          { label: "Type", value: "Short or long missions" },
+        ],
+        cdi: [
+          { label: "Contract", value: "Permanent or contractor" },
+          { label: "Setup", value: "Remote / hybrid" },
+          { label: "Area", value: "Paris & Île-de-France" },
+          { label: "Start", value: "Subject to notice" },
+        ],
+      },
+      cta: {
+        primary: "Start a project",
+        secondary: "or see my work",
+        subjectFreelance: "Freelance mission",
+        subjectCdi: "Full-time opportunity",
       },
     },
     footer: {
